@@ -1,14 +1,13 @@
 <!DOCTYPE html>
-<html lang="en" class="h-full">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AfriQuest - Pan-African Exploration & Travel Platform</title>
-    <meta name="description" content="The ultimate Pan-African travel platform, offline-ready, low-bandwidth optimized with interactive maps, wildlife tracking, fintech, cultural guides, and local guide booking.">
-    <meta name="theme-color" content="#d97706">
-    <link rel="manifest" href="manifest.json">
+    <title>AfriQuest - Interactive Africa Travel & Cultural Engine</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
     <script>
         tailwind.config = {
             darkMode: 'class',
@@ -24,497 +23,387 @@
                             800: '#92400e',
                             900: '#78350f',
                         },
+                        terracotta: {
+                            500: '#e05638',
+                            600: '#c84327',
+                            700: '#9e3019',
+                        },
                         jungle: {
                             500: '#10b981',
+                            600: '#059669',
                             700: '#047857',
-                            900: '#064e3b'
                         }
                     }
                 }
             }
         }
     </script>
-    <!-- FontAwesome Icons CDN -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        /* Custom styles for high-density elements */
-        .no-scrollbar::-webkit-scrollbar { display: none; }
-        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-        .data-saver-active img, .data-saver-active video { display: none !important; }
-        .data-saver-active .data-saver-hide { display: none !important; }
+        /* Custom scrollbars & smooth transition */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.05);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(217, 119, 6, 0.4);
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(217, 119, 6, 0.7);
+        }
+        .data-saver img, .data-saver .bg-media {
+            display: none !important;
+        }
+        .data-saver .low-bandwidth-fallback {
+            display: flex !important;
+        }
     </style>
 </head>
-<body class="bg-stone-50 text-stone-900 dark:bg-stone-950 dark:text-stone-100 min-h-full flex flex-col font-sans transition-colors duration-200">
+<body class="bg-stone-50 dark:bg-stone-950 text-stone-800 dark:text-stone-100 min-h-screen flex flex-col font-sans transition-colors duration-200">
 
-    <!-- TOP ANNOUNCEMENT & SYSTEM BAR -->
-    <header class="bg-savanna-900 text-stone-200 text-xs px-4 py-2 flex flex-wrap justify-between items-center border-b border-savanna-800 shadow-md">
-        <div class="flex items-center space-x-4">
-            <span id="connection-status" class="inline-flex items-center px-2 py-0.5 rounded text-xs font-semibold bg-emerald-800 text-emerald-100">
-                <i class="fa-solid fa-wifi mr-1"></i> Online
-            </span>
-            <span class="hidden sm:inline-block"><i class="fa-solid fa-map-location-dot mr-1"></i> Covering all 54 African Nations</span>
+    <!-- TOP NAVIGATION HEADER -->
+    <header class="sticky top-0 z-40 bg-stone-900/95 text-white backdrop-blur border-b border-stone-800 shadow-md">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            <!-- Brand Logo -->
+            <div class="flex items-center space-x-3 cursor-pointer" onclick="switchTab('explore')">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-savanna-600 to-terracotta-500 flex items-center justify-center text-white shadow-lg">
+                    <i data-lucide="compass" class="w-6 h-6 animate-pulse"></i>
+                </div>
+                <div>
+                    <h1 class="text-xl font-bold tracking-wider text-amber-500 flex items-center gap-1.5">
+                        AfriQuest <span class="text-xs px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-300 font-normal">v2.5</span>
+                    </h1>
+                    <p class="text-xs text-stone-400 hidden sm:block">54 Nations • Unified Travel Engine</p>
+                </div>
+            </div>
+
+            <!-- Main Navigation Links -->
+            <nav class="hidden md:flex items-center space-x-1 text-sm font-medium">
+                <button onclick="switchTab('explore')" id="nav-explore" class="nav-btn px-3 py-2 rounded-lg text-amber-400 bg-stone-800 flex items-center gap-2">
+                    <i data-lucide="globe" class="w-4 h-4"></i> 54 Countries
+                </button>
+                <button onclick="switchTab('wildlife')" id="nav-wildlife" class="nav-btn px-3 py-2 rounded-lg text-stone-300 hover:text-white hover:bg-stone-800 flex items-center gap-2">
+                    <i data-lucide="paw-print" class="w-4 h-4"></i> Wildlife
+                </button>
+                <button onclick="switchTab('guides')" id="nav-guides" class="nav-btn px-3 py-2 rounded-lg text-stone-300 hover:text-white hover:bg-stone-800 flex items-center gap-2">
+                    <i data-lucide="users" class="w-4 h-4"></i> Local Guides
+                </button>
+                <button onclick="switchTab('finance')" id="nav-finance" class="nav-btn px-3 py-2 rounded-lg text-stone-300 hover:text-white hover:bg-stone-800 flex items-center gap-2">
+                    <i data-lucide="wallet" class="w-4 h-4"></i> Money & FX
+                </button>
+                <button onclick="switchTab('audio')" id="nav-audio" class="nav-btn px-3 py-2 rounded-lg text-stone-300 hover:text-white hover:bg-stone-800 flex items-center gap-2">
+                    <i data-lucide="volume-2" class="w-4 h-4"></i> Audio Phrases
+                </button>
+                <button onclick="switchTab('visa')" id="nav-visa" class="nav-btn px-3 py-2 rounded-lg text-stone-300 hover:text-white hover:bg-stone-800 flex items-center gap-2">
+                    <i data-lucide="file-check" class="w-4 h-4"></i> Visa Checker
+                </button>
+                <button onclick="switchTab('itinerary')" id="nav-itinerary" class="nav-btn px-3 py-2 rounded-lg text-stone-300 hover:text-white hover:bg-stone-800 flex items-center gap-2">
+                    <i data-lucide="map-pin" class="w-4 h-4"></i> Planner
+                </button>
+            </nav>
+
+            <!-- Global Action Controls (Data Saver & Dark Mode) -->
+            <div class="flex items-center space-x-3">
+                <!-- Data Saver Toggle -->
+                <button id="data-saver-btn" onclick="toggleDataSaver()" class="px-2.5 py-1.5 rounded-lg border border-stone-700 text-xs font-medium flex items-center gap-1.5 hover:bg-stone-800 text-stone-300 transition" title="Toggle Low-Bandwidth Mode for slow connections">
+                    <i data-lucide="wifi-off" class="w-3.5 h-3.5 text-emerald-400"></i>
+                    <span id="data-saver-label" class="hidden sm:inline">Data Saver: OFF</span>
+                </button>
+
+                <!-- Dark Mode Toggle -->
+                <button onclick="toggleDarkMode()" class="p-2 rounded-lg border border-stone-700 text-stone-300 hover:bg-stone-800 transition">
+                    <i data-lucide="moon" id="theme-icon-dark" class="w-4 h-4"></i>
+                    <i data-lucide="sun" id="theme-icon-light" class="w-4 h-4 hidden"></i>
+                </button>
+
+                <!-- Mobile Menu Icon Button -->
+                <button onclick="toggleMobileMenu()" class="md:hidden p-2 rounded-lg border border-stone-700 text-stone-300 hover:bg-stone-800">
+                    <i data-lucide="menu" class="w-5 h-5"></i>
+                </button>
+            </div>
         </div>
-        <div class="flex items-center space-x-4">
-            <!-- Data Saver Toggle -->
-            <button id="data-saver-toggle" onclick="toggleDataSaver()" class="flex items-center space-x-1 bg-savanna-800 hover:bg-savanna-700 px-2 py-1 rounded border border-savanna-600 transition">
-                <i class="fa-solid fa-feather"></i>
-                <span id="data-saver-label">Data Saver: OFF</span>
-            </button>
-            <!-- Dark Mode Toggle -->
-            <button onclick="toggleDarkMode()" class="hover:text-savanna-500 transition p-1">
-                <i class="fa-solid fa-moon text-sm dark:hidden"></i>
-                <i class="fa-solid fa-sun text-sm hidden dark:inline"></i>
-            </button>
+
+        <!-- Mobile Navigation Menu Dropdown -->
+        <div id="mobile-menu" class="hidden md:hidden border-t border-stone-800 bg-stone-900 px-4 pt-2 pb-4 space-y-1">
+            <button onclick="switchTab('explore')" class="w-full text-left px-3 py-2 rounded-md text-stone-200 hover:bg-stone-800 flex items-center gap-2"><i data-lucide="globe" class="w-4 h-4"></i> 54 Countries Explorer</button>
+            <button onclick="switchTab('wildlife')" class="w-full text-left px-3 py-2 rounded-md text-stone-200 hover:bg-stone-800 flex items-center gap-2"><i data-lucide="paw-print" class="w-4 h-4"></i> Wildlife Tracker</button>
+            <button onclick="switchTab('guides')" class="w-full text-left px-3 py-2 rounded-md text-stone-200 hover:bg-stone-800 flex items-center gap-2"><i data-lucide="users" class="w-4 h-4"></i> Local Guide Directory</button>
+            <button onclick="switchTab('finance')" class="w-full text-left px-3 py-2 rounded-md text-stone-200 hover:bg-stone-800 flex items-center gap-2"><i data-lucide="wallet" class="w-4 h-4"></i> Fintech & FX Calculator</button>
+            <button onclick="switchTab('audio')" class="w-full text-left px-3 py-2 rounded-md text-stone-200 hover:bg-stone-800 flex items-center gap-2"><i data-lucide="volume-2" class="w-4 h-4"></i> Audio Phrasebook</button>
+            <button onclick="switchTab('visa')" class="w-full text-left px-3 py-2 rounded-md text-stone-200 hover:bg-stone-800 flex items-center gap-2"><i data-lucide="file-check" class="w-4 h-4"></i> Visa Requirement Checker</button>
+            <button onclick="switchTab('itinerary')" class="w-full text-left px-3 py-2 rounded-md text-stone-200 hover:bg-stone-800 flex items-center gap-2"><i data-lucide="map-pin" class="w-4 h-4"></i> Itinerary Builder</button>
         </div>
     </header>
 
-    <!-- MAIN NAVBAR -->
-    <nav class="bg-white dark:bg-stone-900 border-b border-stone-200 dark:border-stone-800 sticky top-0 z-50 shadow-sm">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex items-center justify-between h-16">
-                <div class="flex items-center space-x-3 cursor-pointer" onclick="switchTab('overview')">
-                    <div class="bg-savanna-600 text-white p-2 rounded-lg shadow-md">
-                        <i class="fa-solid fa-compass text-2xl"></i>
-                    </div>
-                    <div>
-                        <span class="text-xl font-black tracking-tight text-savanna-800 dark:text-savanna-500">AfriQuest</span>
-                        <span class="block text-[10px] uppercase tracking-widest text-stone-500 dark:text-stone-400 font-semibold">Master Exploration Platform</span>
-                    </div>
-                </div>
+    <!-- MAIN APP CONTENT WRAPPER -->
+    <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6">
 
-                <!-- Global Search & Currency Picker -->
-                <div class="hidden md:flex items-center space-x-3 flex-1 max-w-md mx-6">
-                    <div class="relative w-full">
-                        <input type="text" id="global-search" placeholder="Search safaris, visas, transport, phrasebook..." class="w-full pl-9 pr-4 py-1.5 text-sm rounded-full bg-stone-100 dark:bg-stone-800 border-none focus:ring-2 focus:ring-savanna-600 dark:text-stone-200">
-                        <i class="fa-solid fa-magnifying-glass absolute left-3 top-2.5 text-stone-400 text-xs"></i>
-                    </div>
-                </div>
-
-                <!-- Right Quick Controls -->
-                <div class="flex items-center space-x-3">
-                    <div class="hidden sm:flex items-center space-x-1 bg-stone-100 dark:bg-stone-800 px-2 py-1 rounded-md text-xs font-medium">
-                        <i class="fa-solid fa-coins text-savanna-600"></i>
-                        <select id="global-currency" onchange="updateGlobalCurrency()" class="bg-transparent border-none focus:outline-none dark:text-stone-200 font-bold cursor-pointer">
-                            <option value="USD">USD ($)</option>
-                            <option value="KES">KES (KSh)</option>
-                            <option value="ZAR">ZAR (R)</option>
-                            <option value="NGN">NGN (₦)</option>
-                            <option value="EUR">EUR (€)</option>
+        <!-- ================= TAB 1: 54 COUNTRIES EXPLORER ================= -->
+        <section id="tab-explore" class="tab-content block space-y-6">
+            <!-- Hero / Search Filter Header -->
+            <div class="bg-gradient-to-r from-savanna-900 via-stone-900 to-terracotta-900 rounded-2xl p-6 sm:p-8 text-white shadow-xl relative overflow-hidden">
+                <div class="relative z-10 max-w-3xl space-y-3">
+                    <span class="px-3 py-1 bg-amber-500/20 text-amber-300 border border-amber-500/30 text-xs font-semibold rounded-full uppercase tracking-wider">Pan-African Travel Engine</span>
+                    <h2 class="text-2xl sm:text-4xl font-extrabold tracking-tight text-amber-100">Explore All 54 African Nations</h2>
+                    <p class="text-stone-300 text-sm sm:text-base leading-relaxed">
+                        Discover regional highlights, local currencies, languages, major hubs, safety indicators, and top attractions across Eastern, Western, Northern, Southern, and Central Africa.
+                    </p>
+                    
+                    <!-- Search and Filter Bar -->
+                    <div class="pt-2 flex flex-col sm:flex-row gap-3">
+                        <div class="relative flex-grow">
+                            <i data-lucide="search" class="w-5 h-5 absolute left-3.5 top-3 text-stone-400"></i>
+                            <input type="text" id="country-search" oninput="filterCountries()" placeholder="Search country, capital, language, or landmark..." class="w-full pl-10 pr-4 py-2.5 bg-stone-800/90 border border-stone-700 rounded-xl text-white placeholder-stone-400 focus:outline-none focus:ring-2 focus:ring-amber-500 text-sm">
+                        </div>
+                        <select id="region-filter" onchange="filterCountries()" class="bg-stone-800/90 border border-stone-700 rounded-xl px-4 py-2.5 text-white text-sm focus:outline-none focus:ring-2 focus:ring-amber-500">
+                            <option value="All">All Regions (54)</option>
+                            <option value="East Africa">East Africa</option>
+                            <option value="West Africa">West Africa</option>
+                            <option value="North Africa">North Africa</option>
+                            <option value="Southern Africa">Southern Africa</option>
+                            <option value="Central Africa">Central Africa</option>
                         </select>
                     </div>
-                    <button onclick="switchTab('itinerary')" class="bg-savanna-600 hover:bg-savanna-700 text-white px-3 py-1.5 rounded-lg text-xs font-bold transition flex items-center space-x-1 shadow">
-                        <i class="fa-solid fa-route"></i>
-                        <span>My Trip</span>
-                        <span id="itinerary-badge" class="bg-white text-savanna-800 px-1.5 py-0.2 rounded-full text-[10px] font-extrabold ml-1">0</span>
-                    </button>
-                </div>
-            </div>
-        </div>
-    </nav>
-
-    <!-- MODULE NAVIGATION TABS (SCROLLABLE BAR) -->
-    <div class="bg-stone-200 dark:bg-stone-900 border-b border-stone-300 dark:border-stone-800 overflow-x-auto no-scrollbar">
-        <div class="max-w-7xl mx-auto px-4 flex space-x-1 py-2 text-xs font-semibold whitespace-nowrap" id="module-tab-bar">
-            <!-- Tabs dynamically rendered or hardcoded below -->
-        </div>
-    </div>
-
-    <!-- MAIN CONTENT CONTAINER -->
-    <main class="flex-1 max-w-7xl w-full mx-auto p-4 sm:p-6 lg:p-8 space-y-8">
-
-        <!-- TAB 1: OVERVIEW & DASHBOARD HUB -->
-        <section id="tab-overview" class="tab-content block space-y-6">
-            <!-- Hero Banner -->
-            <div class="relative rounded-2xl overflow-hidden bg-gradient-to-r from-savanna-900 via-amber-900 to-stone-900 text-white p-8 sm:p-12 shadow-xl border border-savanna-700">
-                <div class="relative z-10 max-w-2xl space-y-4">
-                    <span class="inline-block bg-savanna-600 text-white text-[11px] font-bold uppercase tracking-wider px-3 py-1 rounded-full shadow">All 25 Modules Integrated</span>
-                    <h1 class="text-3xl sm:text-5xl font-black leading-tight tracking-tight">Explore Africa Without Limits.</h1>
-                    <p class="text-stone-300 text-sm sm:text-base leading-relaxed">From low-bandwidth USSD modes and wildlife tracking to direct mobile money guide bookings, local bus routes, and full PWA offline operation.</p>
-                    <div class="flex flex-wrap gap-3 pt-2">
-                        <button onclick="switchTab('geo-explorer')" class="bg-savanna-600 hover:bg-savanna-500 text-white font-bold px-5 py-2.5 rounded-xl shadow-lg transition flex items-center space-x-2 text-sm">
-                            <i class="fa-solid fa-map-location"></i>
-                            <span>Interactive Map</span>
-                        </button>
-                        <button onclick="switchTab('fintech')" class="bg-stone-800 hover:bg-stone-700 text-stone-100 font-bold px-5 py-2.5 rounded-xl border border-stone-600 shadow-lg transition flex items-center space-x-2 text-sm">
-                            <i class="fa-solid fa-wallet"></i>
-                            <span>Fintech Hub</span>
-                        </button>
-                    </div>
                 </div>
             </div>
 
-            <!-- Quick Stats Grid -->
-            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-                <div class="bg-white dark:bg-stone-900 p-4 rounded-xl border border-stone-200 dark:border-stone-800 shadow-sm flex items-center space-x-3">
-                    <div class="bg-amber-100 dark:bg-amber-950 text-amber-700 dark:text-amber-400 p-3 rounded-lg"><i class="fa-solid fa-earth-africa text-xl"></i></div>
-                    <div>
-                        <span class="text-xs text-stone-500 dark:text-stone-400 block font-medium">Countries</span>
-                        <span class="text-lg font-black dark:text-stone-100">54 Nations</span>
-                    </div>
-                </div>
-                <div class="bg-white dark:bg-stone-900 p-4 rounded-xl border border-stone-200 dark:border-stone-800 shadow-sm flex items-center space-x-3">
-                    <div class="bg-emerald-100 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-400 p-3 rounded-lg"><i class="fa-solid fa-paw text-xl"></i></div>
-                    <div>
-                        <span class="text-xs text-stone-500 dark:text-stone-400 block font-medium">Parks & Reserves</span>
-                        <span class="text-lg font-black dark:text-stone-100">180+ Overlays</span>
-                    </div>
-                </div>
-                <div class="bg-white dark:bg-stone-900 p-4 rounded-xl border border-stone-200 dark:border-stone-800 shadow-sm flex items-center space-x-3">
-                    <div class="bg-blue-100 dark:bg-blue-950 text-blue-700 dark:text-blue-400 p-3 rounded-lg"><i class="fa-solid fa-money-bill-transfer text-xl"></i></div>
-                    <div>
-                        <span class="text-xs text-stone-500 dark:text-stone-400 block font-medium">Fintech Gateways</span>
-                        <span class="text-lg font-black dark:text-stone-100">M-Pesa / MoMo</span>
-                    </div>
-                </div>
-                <div class="bg-white dark:bg-stone-900 p-4 rounded-xl border border-stone-200 dark:border-stone-800 shadow-sm flex items-center space-x-3">
-                    <div class="bg-purple-100 dark:bg-purple-950 text-purple-700 dark:text-purple-400 p-3 rounded-lg"><i class="fa-solid fa-wifi text-xl"></i></div>
-                    <div>
-                        <span class="text-xs text-stone-500 dark:text-stone-400 block font-medium">Offline Readiness</span>
-                        <span class="text-lg font-black dark:text-stone-100">100% PWA + Storage</span>
-                    </div>
-                </div>
+            <!-- Country Grid & Quick Stats -->
+            <div class="flex items-center justify-between">
+                <h3 class="text-lg font-bold text-stone-900 dark:text-stone-100 flex items-center gap-2">
+                    <i data-lucide="map" class="w-5 h-5 text-amber-600"></i>
+                    Destination Directory
+                </h3>
+                <span id="country-count-badge" class="text-xs font-medium px-2.5 py-1 bg-amber-100 dark:bg-amber-900/40 text-amber-800 dark:text-amber-300 rounded-md">Showing 54 of 54</span>
             </div>
 
-            <!-- 25 Pillars Quick Navigation Cards -->
-            <div class="space-y-4">
-                <h2 class="text-xl font-bold dark:text-stone-100 flex items-center space-x-2">
-                    <i class="fa-solid fa-cubes text-savanna-600"></i>
-                    <span>Explore All Platform Core Modules</span>
-                </h2>
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4" id="pillars-grid">
-                    <!-- Dynamically generated module cards -->
-                </div>
+            <div id="countries-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+                <!-- Injected via JavaScript -->
             </div>
         </section>
 
-        <!-- TAB 2: GEO-EXPLORER & WILDLIFE TRACKER -->
-        <section id="tab-geo-explorer" class="tab-content hidden space-y-6">
-            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-stone-200 dark:border-stone-800 pb-4">
+        <!-- ================= TAB 2: WILDLIFE TRACKER ================= -->
+        <section id="tab-wildlife" class="tab-content hidden space-y-6">
+            <div class="bg-gradient-to-r from-emerald-950 via-stone-900 to-amber-950 p-6 sm:p-8 rounded-2xl text-white shadow-xl">
+                <div class="max-w-2xl space-y-2">
+                    <span class="px-3 py-1 bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 text-xs font-semibold rounded-full uppercase">Safari & Conservation</span>
+                    <h2 class="text-2xl sm:text-3xl font-bold text-emerald-100">African Wildlife Tracker & Safari Index</h2>
+                    <p class="text-stone-300 text-sm">Track key wildlife species, best sighting months, protected parks, and conservation status.</p>
+                </div>
+            </div>
+
+            <!-- Species Filter -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4" id="wildlife-cards-container">
+                <!-- Injected via JS -->
+            </div>
+        </section>
+
+        <!-- ================= TAB 3: LOCAL GUIDE DIRECTORY ================= -->
+        <section id="tab-guides" class="tab-content hidden space-y-6">
+            <div class="bg-stone-900 text-white p-6 rounded-2xl shadow-xl flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
                 <div>
-                    <h2 class="text-2xl font-black text-stone-900 dark:text-stone-100">Interactive Map & Wildlife Tracker</h2>
-                    <p class="text-xs text-stone-500 dark:text-stone-400">View national park boundaries, Great Migration overlays, waterhole cams, and 4x4 trail ratings.</p>
+                    <h2 class="text-2xl font-bold text-amber-400">Verified Local Guides & Experts</h2>
+                    <p class="text-stone-300 text-sm">Connect with certified local guides, cultural historians, and safari trackers across the continent.</p>
                 </div>
-                <div class="flex items-center space-x-2">
-                    <button onclick="simulateGPSLocation()" class="bg-stone-200 dark:bg-stone-800 hover:bg-stone-300 dark:hover:bg-stone-700 text-xs px-3 py-1.5 rounded-lg font-bold dark:text-stone-200">
-                        <i class="fa-solid fa-location-crosshairs mr-1"></i> My GPS Location
-                    </button>
-                    <select id="map-layer-select" onchange="updateMapLayer()" class="bg-stone-100 dark:bg-stone-800 border border-stone-300 dark:border-stone-700 rounded-lg text-xs p-1.5 font-bold dark:text-stone-200">
-                        <option value="parks">Layer: National Park Borders</option>
-                        <option value="migration">Layer: Great Wildebeest Migration</option>
-                        <option value="waterholes">Layer: Live Waterholes & Cam Feeds</option>
-                        <option value="trails">Layer: 4x4 Offroad Trail Difficulty</option>
-                    </select>
-                </div>
+                <button onclick="openGuideModal()" class="px-4 py-2 bg-amber-600 hover:bg-amber-700 text-white rounded-xl text-sm font-medium flex items-center gap-2">
+                    <i data-lucide="user-plus" class="w-4 h-4"></i> Join as a Guide
+                </button>
             </div>
 
-            <!-- Interactive Map Container (Canvas / Grid Simulator) -->
-            <div class="bg-stone-900 rounded-2xl border border-stone-700 h-96 relative overflow-hidden flex flex-col justify-between p-4 shadow-inner" id="map-canvas-container">
-                <!-- Overlay Status Info -->
-                <div class="z-10 flex justify-between items-start">
-                    <div class="bg-stone-950/80 backdrop-blur-md p-3 rounded-xl border border-stone-800 text-xs text-white max-w-xs space-y-1">
-                        <span class="text-savanna-500 font-bold uppercase tracking-wider text-[10px] block" id="layer-title">Active Layer: National Parks</span>
-                        <p id="layer-desc" class="text-stone-300">Serengeti, Kruger, Chobe & Masai Mara boundaries active.</p>
-                    </div>
-                    <div class="bg-stone-950/80 backdrop-blur-md px-3 py-1.5 rounded-xl border border-stone-800 text-xs text-emerald-400 font-mono">
-                        <i class="fa-solid fa-signal text-[10px]"></i> Live Wildlife Signals: 14 Active
-                    </div>
-                </div>
-
-                <!-- Simulated Interactive Pins Grid -->
-                <div class="absolute inset-0 grid grid-cols-4 grid-rows-3 p-8 gap-4 pointer-events-none" id="map-pins-layer">
-                    <!-- Dynamic pins rendered by JS -->
-                </div>
-
-                <!-- Map Control Footer -->
-                <div class="z-10 bg-stone-950/90 backdrop-blur-md p-3 rounded-xl border border-stone-800 flex justify-between items-center text-xs text-stone-300">
-                    <span id="map-coordinates"><i class="fa-solid fa-map-pin mr-1 text-savanna-500"></i> Lat: -2.333, Long: 34.833 (Serengeti Basin)</span>
-                    <div class="space-x-2">
-                        <button onclick="zoomMap(1)" class="bg-stone-800 hover:bg-stone-700 px-2.5 py-1 rounded font-bold text-white">+</button>
-                        <button onclick="zoomMap(-1)" class="bg-stone-800 hover:bg-stone-700 px-2.5 py-1 rounded font-bold text-white">-</button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Big 5 & Sightings Logger -->
-            <div class="bg-white dark:bg-stone-900 rounded-2xl border border-stone-200 dark:border-stone-800 p-6 shadow-sm space-y-4">
-                <div class="flex justify-between items-center">
-                    <h3 class="font-bold text-lg dark:text-stone-100 flex items-center space-x-2">
-                        <i class="fa-solid fa-paw text-savanna-600"></i>
-                        <span>Digital Wildlife Sightings Checklist (Big 5 & Beyond)</span>
-                    </h3>
-                    <span id="checklist-score" class="text-xs bg-savanna-100 dark:bg-savanna-950 text-savanna-800 dark:text-savanna-400 font-bold px-2.5 py-1 rounded-full">Logged: 0 / 5</span>
-                </div>
-                <div class="grid grid-cols-2 sm:grid-cols-5 gap-3" id="big5-checklist">
-                    <!-- Dynamic Checklist items -->
-                </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5" id="guides-container">
+                <!-- Injected via JS -->
             </div>
         </section>
 
-        <!-- TAB 3: PAN-AFRICAN FINTECH HUB -->
-        <section id="tab-fintech" class="tab-content hidden space-y-6">
-            <div class="border-b border-stone-200 dark:border-stone-800 pb-4">
-                <h2 class="text-2xl font-black text-stone-900 dark:text-stone-100">Pan-African Fintech & Booking Payments</h2>
-                <p class="text-xs text-stone-500 dark:text-stone-400">Native mobile money, escrow, tipping calculators, multi-currency conversion, and chama savings portals.</p>
-            </div>
+        <!-- ================= TAB 4: FINTECH & CURRENCY ================= -->
+        <section id="tab-finance" class="tab-content hidden space-y-6">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <!-- Currency Converter -->
+                <div class="bg-white dark:bg-stone-900 p-6 rounded-2xl border border-stone-200 dark:border-stone-800 shadow-sm space-y-4">
+                    <div class="flex items-center space-x-3 border-b border-stone-200 dark:border-stone-800 pb-3">
+                        <div class="p-2 bg-amber-500/10 text-amber-600 rounded-lg">
+                            <i data-lucide="repeat" class="w-5 h-5"></i>
+                        </div>
+                        <h3 class="text-lg font-bold">African Currency Converter</h3>
+                    </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <!-- Currency Converter Card -->
-                <div class="bg-white dark:bg-stone-900 rounded-2xl border border-stone-200 dark:border-stone-800 p-6 shadow-sm space-y-4">
-                    <h3 class="font-bold text-base dark:text-stone-100 flex items-center space-x-2">
-                        <i class="fa-solid fa-calculator text-savanna-600"></i>
-                        <span>Multi-Currency Converter</span>
-                    </h3>
                     <div class="space-y-3">
                         <div>
-                            <label class="block text-xs font-semibold text-stone-500 mb-1">Amount</label>
-                            <input type="number" id="calc-amount" value="100" oninput="runCurrencyCalc()" class="w-full p-2 text-sm rounded-lg border border-stone-300 dark:border-stone-700 bg-stone-50 dark:bg-stone-800 font-bold dark:text-stone-100">
+                            <label class="text-xs font-semibold text-stone-500 uppercase">Amount</label>
+                            <input type="number" id="fx-amount" value="100" oninput="calculateFX()" class="w-full mt-1 p-3 bg-stone-50 dark:bg-stone-800 border border-stone-300 dark:border-stone-700 rounded-xl font-bold text-lg focus:ring-2 focus:ring-amber-500">
                         </div>
                         <div class="grid grid-cols-2 gap-3">
                             <div>
-                                <label class="block text-xs font-semibold text-stone-500 mb-1">From</label>
-                                <select id="calc-from" onchange="runCurrencyCalc()" class="w-full p-2 text-sm rounded-lg border border-stone-300 dark:border-stone-700 bg-stone-50 dark:bg-stone-800 font-bold dark:text-stone-100">
-                                    <option value="USD">USD - US Dollar</option>
-                                    <option value="EUR">EUR - Euro</option>
-                                    <option value="KES">KES - Kenyan Shilling</option>
-                                    <option value="ZAR">ZAR - South African Rand</option>
-                                    <option value="NGN">NGN - Nigerian Naira</option>
+                                <label class="text-xs font-semibold text-stone-500 uppercase">From</label>
+                                <select id="fx-from" onchange="calculateFX()" class="w-full mt-1 p-2.5 bg-stone-50 dark:bg-stone-800 border border-stone-300 dark:border-stone-700 rounded-xl text-sm">
+                                    <option value="USD">USD ($)</option>
+                                    <option value="EUR">EUR (€)</option>
+                                    <option value="GBP">GBP (£)</option>
+                                    <option value="KES">KES (KSh)</option>
+                                    <option value="NGN">NGN (₦)</option>
+                                    <option value="ZAR">ZAR (R)</option>
+                                    <option value="EGP">EGP (E£)</option>
+                                    <option value="GHS">GHS (GH₵)</option>
+                                    <option value="TZS">TZS (TSh)</option>
                                 </select>
                             </div>
                             <div>
-                                <label class="block text-xs font-semibold text-stone-500 mb-1">To</label>
-                                <select id="calc-to" onchange="runCurrencyCalc()" class="w-full p-2 text-sm rounded-lg border border-stone-300 dark:border-stone-700 bg-stone-50 dark:bg-stone-800 font-bold dark:text-stone-100">
-                                    <option value="KES">KES - Kenyan Shilling</option>
-                                    <option value="USD">USD - US Dollar</option>
-                                    <option value="ZAR">ZAR - South African Rand</option>
-                                    <option value="NGN">NGN - Nigerian Naira</option>
-                                    <option value="EUR">EUR - Euro</option>
+                                <label class="text-xs font-semibold text-stone-500 uppercase">To</label>
+                                <select id="fx-to" onchange="calculateFX()" class="w-full mt-1 p-2.5 bg-stone-50 dark:bg-stone-800 border border-stone-300 dark:border-stone-700 rounded-xl text-sm">
+                                    <option value="KES">KES (KSh - Kenya)</option>
+                                    <option value="NGN">NGN (₦ - Nigeria)</option>
+                                    <option value="ZAR">ZAR (R - S.Africa)</option>
+                                    <option value="EGP">EGP (E£ - Egypt)</option>
+                                    <option value="GHS">GHS (GH₵ - Ghana)</option>
+                                    <option value="TZS">TZS (TSh - Tanzania)</option>
+                                    <option value="XOF">XOF (CFA - West Africa)</option>
+                                    <option value="USD">USD ($)</option>
                                 </select>
                             </div>
                         </div>
-                        <div class="bg-savanna-50 dark:bg-savanna-950 p-4 rounded-xl border border-savanna-200 dark:border-savanna-800 text-center">
-                            <span class="text-xs text-stone-500 dark:text-stone-400 font-medium block">Converted Amount</span>
-                            <span id="calc-result" class="text-2xl font-black text-savanna-800 dark:text-savanna-400">12,900.00 KES</span>
+
+                        <div class="p-4 bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-900 rounded-xl text-center">
+                            <span class="text-xs text-amber-800 dark:text-amber-300 uppercase font-bold tracking-wider">Converted Result</span>
+                            <p id="fx-result-text" class="text-2xl font-extrabold text-amber-600 dark:text-amber-400 mt-1">--</p>
                         </div>
                     </div>
                 </div>
 
-                <!-- Mobile Money Gateway & Escrow Simulator -->
-                <div class="bg-white dark:bg-stone-900 rounded-2xl border border-stone-200 dark:border-stone-800 p-6 shadow-sm space-y-4">
-                    <h3 class="font-bold text-base dark:text-stone-100 flex items-center space-x-2">
-                        <i class="fa-solid fa-mobile-screen-button text-savanna-600"></i>
-                        <span>Mobile Money & Escrow Checkout</span>
-                    </h3>
-                    <p class="text-xs text-stone-500 dark:text-stone-400">Simulate direct payments via native East/West African mobile networks.</p>
-
-                    <div class="grid grid-cols-2 gap-2">
-                        <button onclick="selectPaymentMethod('M-Pesa')" class="p-3 border border-stone-200 dark:border-stone-700 rounded-xl hover:border-emerald-500 text-left font-bold text-xs flex items-center space-x-2 dark:text-stone-200">
-                            <i class="fa-solid fa-circle-check text-emerald-600"></i>
-                            <span>M-Pesa (Safaricom)</span>
-                        </button>
-                        <button onclick="selectPaymentMethod('MTN MoMo')" class="p-3 border border-stone-200 dark:border-stone-700 rounded-xl hover:border-amber-500 text-left font-bold text-xs flex items-center space-x-2 dark:text-stone-200">
-                            <i class="fa-solid fa-circle-check text-amber-500"></i>
-                            <span>MTN MoMo</span>
-                        </button>
-                        <button onclick="selectPaymentMethod('Orange Money')" class="p-3 border border-stone-200 dark:border-stone-700 rounded-xl hover:border-orange-500 text-left font-bold text-xs flex items-center space-x-2 dark:text-stone-200">
-                            <i class="fa-solid fa-circle-check text-orange-500"></i>
-                            <span>Orange Money</span>
-                        </button>
-                        <button onclick="selectPaymentMethod('Airtel Money')" class="p-3 border border-stone-200 dark:border-stone-700 rounded-xl hover:border-red-500 text-left font-bold text-xs flex items-center space-x-2 dark:text-stone-200">
-                            <i class="fa-solid fa-circle-check text-red-500"></i>
-                            <span>Airtel Money</span>
-                        </button>
+                <!-- Mobile Money & Payment Guide -->
+                <div class="bg-white dark:bg-stone-900 p-6 rounded-2xl border border-stone-200 dark:border-stone-800 shadow-sm space-y-4">
+                    <div class="flex items-center space-x-3 border-b border-stone-200 dark:border-stone-800 pb-3">
+                        <div class="p-2 bg-emerald-500/10 text-emerald-600 rounded-lg">
+                            <i data-lucide="smartphone" class="w-5 h-5"></i>
+                        </div>
+                        <h3 class="text-lg font-bold">Mobile Money & Payment Systems</h3>
                     </div>
 
-                    <div class="space-y-2 pt-2">
-                        <input type="tel" id="mobile-number" placeholder="+254 712 345 678" class="w-full p-2 text-sm rounded-lg border border-stone-300 dark:border-stone-700 bg-stone-50 dark:bg-stone-800 dark:text-stone-100">
-                        <button onclick="processMobilePayment()" class="w-full bg-emerald-700 hover:bg-emerald-600 text-white font-bold py-2.5 rounded-xl text-xs shadow transition">
-                            Trigger Mobile Money STK Push
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- TAB 4: TRANSPORT & INFRASTRUCTURE -->
-        <section id="tab-transport" class="tab-content hidden space-y-6">
-            <div class="border-b border-stone-200 dark:border-stone-800 pb-4">
-                <h2 class="text-2xl font-black text-stone-900 dark:text-stone-100">Local Transport & Border Infrastructure</h2>
-                <p class="text-xs text-stone-500 dark:text-stone-400">Matatu/Danfo route codes, border crossing wait times, and bush flight charter shares.</p>
-            </div>
-
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <!-- Danfo / Matatu Route Finder -->
-                <div class="bg-white dark:bg-stone-900 p-5 rounded-2xl border border-stone-200 dark:border-stone-800 space-y-3">
-                    <div class="flex items-center space-x-2 text-savanna-600 font-bold text-sm">
-                        <i class="fa-solid fa-bus"></i>
-                        <span>Informal Minibus Codes</span>
-                    </div>
-                    <p class="text-xs text-stone-500 dark:text-stone-400">Search local route names for Matatus (Nairobi), Danfos (Lagos), or TroTros (Accra).</p>
-                    <input type="text" id="transport-query" placeholder="e.g. Westlands, Ojuelegba, Osu..." onkeyup="filterTransportRoutes()" class="w-full p-2 text-xs rounded-lg border border-stone-300 dark:border-stone-700 bg-stone-50 dark:bg-stone-800 dark:text-stone-200">
-                    <ul class="text-xs space-y-2 max-h-48 overflow-y-auto" id="transport-list">
-                        <!-- Dynamic transport items -->
-                    </ul>
-                </div>
-
-                <!-- Border Queue Live Tracker -->
-                <div class="bg-white dark:bg-stone-900 p-5 rounded-2xl border border-stone-200 dark:border-stone-800 space-y-3">
-                    <div class="flex items-center space-x-2 text-savanna-600 font-bold text-sm">
-                        <i class="fa-solid fa-passport"></i>
-                        <span>Border Crossing Queue Times</span>
-                    </div>
-                    <p class="text-xs text-stone-500 dark:text-stone-400">User-reported wait times at key land border posts.</p>
-                    <div class="space-y-2" id="border-queue-list">
-                        <!-- Dynamic border list -->
-                    </div>
-                </div>
-
-                <!-- Overland 4x4 Trail Ratings -->
-                <div class="bg-white dark:bg-stone-900 p-5 rounded-2xl border border-stone-200 dark:border-stone-800 space-y-3">
-                    <div class="flex items-center space-x-2 text-savanna-600 font-bold text-sm">
-                        <i class="fa-solid fa-truck-monster"></i>
-                        <span>4x4 Offroad Trail Ratings</span>
-                    </div>
-                    <p class="text-xs text-stone-500 dark:text-stone-400">Terrain conditions, winch requirements, and fuel stops.</p>
-                    <div class="space-y-2" id="trails-list">
-                        <!-- Dynamic trail items -->
+                    <div class="space-y-3 text-sm">
+                        <div class="p-3 bg-stone-50 dark:bg-stone-800 rounded-xl flex justify-between items-center">
+                            <div>
+                                <h4 class="font-bold text-stone-900 dark:text-white">M-Pesa (East Africa)</h4>
+                                <p class="text-xs text-stone-500">Kenya, Tanzania, Uganda, Rwanda</p>
+                            </div>
+                            <span class="px-2 py-1 bg-emerald-100 text-emerald-800 dark:bg-emerald-900/60 dark:text-emerald-300 text-xs rounded font-semibold">Ubiquitous</span>
+                        </div>
+                        <div class="p-3 bg-stone-50 dark:bg-stone-800 rounded-xl flex justify-between items-center">
+                            <div>
+                                <h4 class="font-bold text-stone-900 dark:text-white">MTN Mobile Money / Wave</h4>
+                                <p class="text-xs text-stone-500">Ghana, Senegal, Côte d'Ivoire, Cameroon</p>
+                            </div>
+                            <span class="px-2 py-1 bg-emerald-100 text-emerald-800 dark:bg-emerald-900/60 dark:text-emerald-300 text-xs rounded font-semibold">High Acceptance</span>
+                        </div>
+                        <div class="p-3 bg-stone-50 dark:bg-stone-800 rounded-xl flex justify-between items-center">
+                            <div>
+                                <h4 class="font-bold text-stone-900 dark:text-white">Cards & Bank Transfers</h4>
+                                <p class="text-xs text-stone-500">South Africa, Nigeria, Egypt, Morocco</p>
+                            </div>
+                            <span class="px-2 py-1 bg-blue-100 text-blue-800 dark:bg-blue-900/60 dark:text-blue-300 text-xs rounded font-semibold">Card Preferred</span>
+                        </div>
                     </div>
                 </div>
             </div>
         </section>
 
-        <!-- TAB 5: CULTURAL IMMERSION & AUDIO PHRASEBOOK -->
-        <section id="tab-culture" class="tab-content hidden space-y-6">
-            <div class="border-b border-stone-200 dark:border-stone-800 pb-4">
-                <h2 class="text-2xl font-black text-stone-900 dark:text-stone-100">Cultural Immersion & Audio Phrasebook</h2>
-                <p class="text-xs text-stone-500 dark:text-stone-400">Audio pronunciations for Swahili, Amharic, Zulu, Wolof, plus etiquette cheat sheets.</p>
+        <!-- ================= TAB 5: AUDIO PHRASEBOOK ================= -->
+        <section id="tab-audio" class="tab-content hidden space-y-6">
+            <div class="bg-stone-900 text-white p-6 rounded-2xl shadow-xl space-y-2">
+                <h2 class="text-2xl font-bold text-amber-400">Essential African Phrases</h2>
+                <p class="text-stone-300 text-sm">Key greetings, emergency words, and polite expressions in Swahili, Amharic, Yoruba, Zulu, & Arabic.</p>
             </div>
 
-            <!-- Language & Phrasebook Simulator -->
-            <div class="bg-white dark:bg-stone-900 rounded-2xl border border-stone-200 dark:border-stone-800 p-6 space-y-4">
-                <div class="flex flex-wrap justify-between items-center gap-3">
-                    <div class="flex items-center space-x-2">
-                        <i class="fa-solid fa-language text-2xl text-savanna-600"></i>
-                        <span class="font-bold text-base dark:text-stone-100">Audio Phrasebook Simulator</span>
-                    </div>
-                    <select id="phrasebook-lang" onchange="renderPhrasebook()" class="bg-stone-100 dark:bg-stone-800 border border-stone-300 dark:border-stone-700 rounded-lg text-xs p-2 font-bold dark:text-stone-200">
-                        <option value="swahili">Kiswahili (East Africa)</option>
-                        <option value="amharic">Amharic (Ethiopia)</option>
-                        <option value="zulu">isiZulu (South Africa)</option>
-                        <option value="wolof">Wolof (Senegal / West Africa)</option>
-                    </select>
-                </div>
-
-                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3" id="phrasebook-cards">
-                    <!-- Dynamic audio phrase cards -->
-                </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4" id="phrasebook-container">
+                <!-- Injected via JS -->
             </div>
         </section>
 
-        <!-- TAB 6: VISA & HEALTH DASHBOARD -->
-        <section id="tab-visa-health" class="tab-content hidden space-y-6">
-            <div class="border-b border-stone-200 dark:border-stone-800 pb-4">
-                <h2 class="text-2xl font-black text-stone-900 dark:text-stone-100">Visa & Health Dashboard</h2>
-                <p class="text-xs text-stone-500 dark:text-stone-400">Passport requirements, eVisa links, Yellow Fever rules, and malaria risk maps.</p>
-            </div>
+        <!-- ================= TAB 6: VISA CHECKER ================= -->
+        <section id="tab-visa" class="tab-content hidden space-y-6">
+            <div class="bg-white dark:bg-stone-900 p-6 rounded-2xl border border-stone-200 dark:border-stone-800 shadow-sm max-w-2xl mx-auto space-y-5">
+                <div class="text-center space-y-1">
+                    <div class="inline-p-3 bg-amber-500/10 text-amber-600 rounded-full p-3 mb-2">
+                        <i data-lucide="file-check" class="w-8 h-8 mx-auto"></i>
+                    </div>
+                    <h2 class="text-2xl font-bold">Visa Requirement Quick Checker</h2>
+                    <p class="text-stone-500 text-sm">Select your passport nationality and destination in Africa to verify general entry status.</p>
+                </div>
 
-            <div class="bg-white dark:bg-stone-900 rounded-2xl border border-stone-200 dark:border-stone-800 p-6 space-y-4">
-                <h3 class="font-bold text-base dark:text-stone-100">Check Requirements by Passport</h3>
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
-                        <label class="block text-xs font-semibold text-stone-500 mb-1">Your Passport Nationality</label>
-                        <select id="visa-passport" onchange="checkVisaReqs()" class="w-full p-2.5 text-xs rounded-xl border border-stone-300 dark:border-stone-700 bg-stone-50 dark:bg-stone-800 font-bold dark:text-stone-200">
-                            <option value="US">United States (USA)</option>
-                            <option value="UK">United Kingdom (UK)</option>
-                            <option value="KE">Kenya</option>
-                            <option value="NG">Nigeria</option>
-                            <option value="ZA">South Africa</option>
+                        <label class="block text-xs font-semibold text-stone-500 uppercase mb-1">Your Passport</label>
+                        <select id="visa-passport" class="w-full p-2.5 bg-stone-50 dark:bg-stone-800 border border-stone-300 dark:border-stone-700 rounded-xl text-sm">
+                            <option value="US">United States / Canada / EU</option>
+                            <option value="AFR">African Union Passport Holder</option>
+                            <option value="UK">United Kingdom</option>
+                            <option value="ASIA">China / India / Japan</option>
                         </select>
                     </div>
                     <div>
-                        <label class="block text-xs font-semibold text-stone-500 mb-1">Destination Country</label>
-                        <select id="visa-destination" onchange="checkVisaReqs()" class="w-full p-2.5 text-xs rounded-xl border border-stone-300 dark:border-stone-700 bg-stone-50 dark:bg-stone-800 font-bold dark:text-stone-200">
-                            <option value="Tanzania">Tanzania</option>
-                            <option value="Rwanda">Rwanda</option>
-                            <option value="Ghana">Ghana</option>
-                            <option value="Egypt">Egypt</option>
-                            <option value="SouthAfrica">South Africa</option>
+                        <label class="block text-xs font-semibold text-stone-500 uppercase mb-1">Destination Country</label>
+                        <select id="visa-destination" class="w-full p-2.5 bg-stone-50 dark:bg-stone-800 border border-stone-300 dark:border-stone-700 rounded-xl text-sm">
+                            <option value="Kenya">Kenya (ETA Required)</option>
+                            <option value="Rwanda">Rwanda (Visa on Arrival/e-Visa)</option>
+                            <option value="Egypt">Egypt (e-Visa / On Arrival)</option>
+                            <option value="South Africa">South Africa (e-Visa / Exempt)</option>
+                            <option value="Ghana">Ghana (Visa in Advance)</option>
+                            <option value="Morocco">Morocco (Visa Free / e-Visa)</option>
                         </select>
                     </div>
                 </div>
 
-                <div id="visa-result-box" class="p-4 rounded-xl bg-amber-50 dark:bg-amber-950/50 border border-amber-200 dark:border-amber-800 space-y-2">
-                    <!-- Dynamic result text -->
+                <button onclick="checkVisaStatus()" class="w-full py-3 bg-amber-600 hover:bg-amber-700 text-white rounded-xl font-semibold shadow text-sm">
+                    Check Requirements
+                </button>
+
+                <div id="visa-result-box" class="hidden p-4 rounded-xl text-sm border space-y-1">
+                    <!-- Dynamic Result Inserted Here -->
                 </div>
             </div>
         </section>
 
-        <!-- TAB 7: LOCAL GUIDES MARKETPLACE -->
-        <section id="tab-guides" class="tab-content hidden space-y-6">
-            <div class="border-b border-stone-200 dark:border-stone-800 pb-4">
-                <h2 class="text-2xl font-black text-stone-900 dark:text-stone-100">Community & Direct Local Guide Marketplace</h2>
-                <p class="text-xs text-stone-500 dark:text-stone-400">Book verified local guides directly with escrow protection and zero middleman bloat.</p>
-            </div>
-
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6" id="guides-grid">
-                <!-- Dynamic guide profiles -->
-            </div>
-        </section>
-
-        <!-- TAB 8: ITINERARY PLANNER -->
+        <!-- ================= TAB 7: ITINERARY BUILDER ================= -->
         <section id="tab-itinerary" class="tab-content hidden space-y-6">
-            <div class="border-b border-stone-200 dark:border-stone-800 pb-4 flex justify-between items-center">
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 bg-white dark:bg-stone-900 p-6 rounded-2xl border border-stone-200 dark:border-stone-800">
                 <div>
-                    <h2 class="text-2xl font-black text-stone-900 dark:text-stone-100">Offline Itinerary Planner</h2>
-                    <p class="text-xs text-stone-500 dark:text-stone-400">Stored locally in device storage (IndexedDB/LocalStore) for full offline use.</p>
+                    <h2 class="text-xl font-bold">Interactive Itinerary Builder</h2>
+                    <p class="text-stone-500 text-sm">Plan your dream multi-country journey and track estimated costs.</p>
                 </div>
-                <button onclick="clearItinerary()" class="text-xs bg-red-100 dark:bg-red-950 text-red-700 dark:text-red-400 px-3 py-1.5 rounded-lg font-bold">Clear All</button>
+                <button onclick="clearItinerary()" class="px-3 py-1.5 border border-red-300 text-red-600 hover:bg-red-50 dark:hover:bg-red-950/30 rounded-lg text-xs font-medium">
+                    Reset Itinerary
+                </button>
             </div>
 
-            <div class="bg-white dark:bg-stone-900 rounded-2xl border border-stone-200 dark:border-stone-800 p-6 space-y-4">
-                <div class="flex space-x-2">
-                    <input type="text" id="custom-item-input" placeholder="Add custom stop or activity (e.g., Gorillas in Bwindi)..." class="flex-1 p-2 text-xs rounded-lg border border-stone-300 dark:border-stone-700 bg-stone-50 dark:bg-stone-800 dark:text-stone-200">
-                    <button onclick="addCustomItineraryItem()" class="bg-savanna-600 text-white font-bold px-4 py-2 rounded-lg text-xs">Add</button>
-                </div>
-
-                <div class="space-y-2" id="itinerary-items-list">
-                    <!-- Dynamic saved itinerary items -->
-                </div>
-            </div>
-        </section>
-
-        <!-- TAB 9: PWA CODE DOWNLOADER & SOURCE VIEWER -->
-        <section id="tab-code-files" class="tab-content hidden space-y-6">
-            <div class="border-b border-stone-200 dark:border-stone-800 pb-4">
-                <h2 class="text-2xl font-black text-stone-900 dark:text-stone-100">PWA Files Code Viewer & Downloads</h2>
-                <p class="text-xs text-stone-500 dark:text-stone-400">Download or copy the raw PWA files needed to host this full offline platform (`sw.js`, `manifest.json`, `styles.css`).</p>
-            </div>
-
-            <div class="space-y-6">
-                <!-- sw.js Box -->
-                <div class="bg-stone-900 rounded-2xl border border-stone-800 p-4 space-y-3">
-                    <div class="flex justify-between items-center text-white">
-                        <span class="font-mono text-xs font-bold text-savanna-400"><i class="fa-solid fa-file-code mr-1"></i> sw.js (Service Worker)</span>
-                        <button onclick="downloadFile('sw.js', swCode)" class="bg-savanna-600 hover:bg-savanna-500 px-3 py-1 rounded text-xs font-bold">Download sw.js</button>
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <!-- Form Add Item -->
+                <div class="bg-white dark:bg-stone-900 p-5 rounded-2xl border border-stone-200 dark:border-stone-800 space-y-4">
+                    <h3 class="font-bold text-sm uppercase text-stone-500">Add Stop / Activity</h3>
+                    <div class="space-y-3">
+                        <input type="text" id="itin-title" placeholder="e.g. Serengeti Game Drive" class="w-full p-2.5 bg-stone-50 dark:bg-stone-800 border border-stone-300 dark:border-stone-700 rounded-xl text-sm">
+                        <div class="grid grid-cols-2 gap-2">
+                            <input type="number" id="itin-days" placeholder="Days" min="1" value="3" class="w-full p-2.5 bg-stone-50 dark:bg-stone-800 border border-stone-300 dark:border-stone-700 rounded-xl text-sm">
+                            <input type="number" id="itin-cost" placeholder="Est. Cost ($)" min="0" value="450" class="w-full p-2.5 bg-stone-50 dark:bg-stone-800 border border-stone-300 dark:border-stone-700 rounded-xl text-sm">
+                        </div>
+                        <button onclick="addItineraryItem()" class="w-full py-2.5 bg-amber-600 hover:bg-amber-700 text-white font-medium rounded-xl text-sm flex items-center justify-center gap-2">
+                            <i data-lucide="plus" class="w-4 h-4"></i> Add to Route
+                        </button>
                     </div>
-                    <pre class="bg-stone-950 text-emerald-400 p-4 rounded-xl text-xs overflow-x-auto font-mono max-h-60" id="code-sw"></pre>
                 </div>
 
-                <!-- manifest.json Box -->
-                <div class="bg-stone-900 rounded-2xl border border-stone-800 p-4 space-y-3">
-                    <div class="flex justify-between items-center text-white">
-                        <span class="font-mono text-xs font-bold text-amber-400"><i class="fa-solid fa-file-code mr-1"></i> manifest.json</span>
-                        <button onclick="downloadFile('manifest.json', manifestCode)" class="bg-savanna-600 hover:bg-savanna-500 px-3 py-1 rounded text-xs font-bold">Download manifest.json</button>
+                <!-- Planned Items List -->
+                <div class="lg:col-span-2 bg-white dark:bg-stone-900 p-5 rounded-2xl border border-stone-200 dark:border-stone-800 space-y-4">
+                    <div class="flex justify-between items-center border-b border-stone-200 dark:border-stone-800 pb-3">
+                        <h3 class="font-bold text-sm uppercase text-stone-500">Your Custom Trip Plan</h3>
+                        <div class="text-right">
+                            <span class="text-xs text-stone-500">Total Est:</span>
+                            <span id="itin-total-cost" class="font-extrabold text-amber-600 text-base ml-1">$0</span>
+                        </div>
                     </div>
-                    <pre class="bg-stone-950 text-amber-300 p-4 rounded-xl text-xs overflow-x-auto font-mono max-h-60" id="code-manifest"></pre>
-                </div>
 
-                <!-- styles.css Box -->
-                <div class="bg-stone-900 rounded-2xl border border-stone-800 p-4 space-y-3">
-                    <div class="flex justify-between items-center text-white">
-                        <span class="font-mono text-xs font-bold text-blue-400"><i class="fa-solid fa-file-code mr-1"></i> styles.css</span>
-                        <button onclick="downloadFile('styles.css', cssCode)" class="bg-savanna-600 hover:bg-savanna-500 px-3 py-1 rounded text-xs font-bold">Download styles.css</button>
+                    <div id="itinerary-list" class="space-y-3">
+                        <!-- Injected via JS -->
                     </div>
-                    <pre class="bg-stone-950 text-blue-300 p-4 rounded-xl text-xs overflow-x-auto font-mono max-h-60" id="code-css"></pre>
                 </div>
             </div>
         </section>
@@ -522,488 +411,444 @@
     </main>
 
     <!-- FOOTER -->
-    <footer class="bg-white dark:bg-stone-900 border-t border-stone-200 dark:border-stone-800 mt-auto py-6">
-        <div class="max-w-7xl mx-auto px-4 text-center space-y-2 text-xs text-stone-500 dark:text-stone-400">
-            <p class="font-bold text-stone-700 dark:text-stone-300">AfriQuest Master Pan-African Exploration Platform &copy; 2026</p>
-            <p>Designed for High-Impact Exploration, Low-Bandwidth Connectivity, and Local Economic Growth.</p>
+    <footer class="bg-stone-900 text-stone-400 border-t border-stone-800 py-8 mt-12">
+        <div class="max-w-7xl mx-auto px-4 text-center space-y-3">
+            <div class="flex items-center justify-center space-x-2 text-amber-500 font-bold text-lg">
+                <i data-lucide="compass" class="w-5 h-5"></i>
+                <span>AfriQuest Engine</span>
+            </div>
+            <p class="text-xs text-stone-500 max-w-xl mx-auto">
+                Promoting sustainable travel, cultural heritage preservation, and seamless pan-African tourism across all 54 sovereign nations.
+            </p>
+            <div class="text-xs text-stone-600 pt-2">
+                &copy; 2026 AfriQuest Interactive. All rights reserved.
+            </div>
         </div>
     </footer>
 
-    <!-- JAVASCRIPT LOGIC & PWA SIMULATION -->
+    <!-- JAVASCRIPT LOGIC -->
     <script>
-        // --- 1. STATE MANAGEMENT ---
-        let currentTab = 'overview';
-        let dataSaver = false;
-        let itinerary = JSON.parse(localStorage.getItem('afriquest_itinerary') || '[]');
-        let selectedCurrency = 'USD';
-        const currencyRates = { USD: 1, KES: 129.5, ZAR: 18.2, NGN: 1480, EUR: 0.92 };
-
-        // Core 25 Categories Mapping
-        const pillarCategories = [
-            { id: 'geo-explorer', name: '1. Core Interactive Maps & Geo-Tracking', icon: 'fa-map-location-dot', color: 'text-amber-600' },
-            { id: 'fintech', name: '2. Pan-African Fintech & Booking', icon: 'fa-wallet', color: 'text-emerald-600' },
-            { id: 'low-bandwidth', name: '3. Low-Bandwidth & Offline Mode', icon: 'fa-feather', color: 'text-blue-600' },
-            { id: 'geo-explorer', name: '4. Safari, Wildlife & Eco-Tourism', icon: 'fa-paw', color: 'text-green-700' },
-            { id: 'transport', name: '5. Local Transport Aggregators', icon: 'fa-bus', color: 'text-orange-600' },
-            { id: 'culture', name: '6. Cultural Immersion & Audio Guides', icon: 'fa-language', color: 'text-purple-600' },
-            { id: 'visa-health', name: '7. Safety, Health & Medical', icon: 'fa-heart-pulse', color: 'text-red-600' },
-            { id: 'itinerary', name: '8. Itinerary Builders & AI Planners', icon: 'fa-route', color: 'text-teal-600' },
-            { id: 'guides', name: '9. Community Forums & Guide Booking', icon: 'fa-users', color: 'text-indigo-600' },
-            { id: 'code-files', name: '10. B2B & PWA Architecture Source', icon: 'fa-code', color: 'text-stone-600' }
+        // DATA SETS: 54 COUNTRIES
+        const countriesData = [
+            { name: "Kenya", region: "East Africa", capital: "Nairobi", currency: "KES", lang: "Swahili, English", badge: "Safari Hub", safety: "Safe (Exercise standard caution)" },
+            { name: "Tanzania", region: "East Africa", capital: "Dodoma / Dar es Salaam", currency: "TZS", lang: "Swahili, English", badge: "Kilimanjaro", safety: "Very Safe" },
+            { name: "Rwanda", region: "East Africa", capital: "Kigali", currency: "RWF", lang: "Kinyarwanda, French, English", badge: "Gorilla Trekking", safety: "Top Safety Rating" },
+            { name: "Uganda", region: "East Africa", capital: "Kampala", currency: "UGX", lang: "English, Swahili", badge: "Pearl of Africa", safety: "Safe" },
+            { name: "Ethiopia", region: "East Africa", capital: "Addis Ababa", currency: "ETB", lang: "Amharic", badge: "Ancient History", safety: "Check Regional Advisories" },
+            { name: "Egypt", region: "North Africa", capital: "Cairo", currency: "EGP", lang: "Arabic", badge: "Pyramids", safety: "Safe in Tourist Zones" },
+            { name: "Morocco", region: "North Africa", capital: "Rabat", currency: "MAD", lang: "Arabic, Amazigh, French", badge: "Culture & Souks", safety: "Very Safe" },
+            { name: "South Africa", region: "Southern Africa", capital: "Pretoria / Cape Town", currency: "ZAR", lang: "11 Official Languages", badge: "Table Mountain", safety: "Exercise Caution in Cities" },
+            { name: "Nigeria", region: "West Africa", capital: "Abuja", currency: "NGN", lang: "English, Hausa, Yoruba, Igbo", badge: "Afrobeats Capital", safety: "Check Specific Zones" },
+            { name: "Ghana", region: "West Africa", capital: "Accra", currency: "GHS", lang: "English, Twi", badge: "Year of Return", safety: "Very Safe" },
+            { name: "Senegal", region: "West Africa", capital: "Dakar", currency: "XOF", lang: "French, Wolof", badge: "Teranga Hospitality", safety: "Very Safe" },
+            { name: "Namibia", region: "Southern Africa", capital: "Windhoek", currency: "NAD / ZAR", lang: "English, German, Afrikaans", badge: "Dune 45", safety: "Top Safety Rating" },
+            { name: "Botswana", region: "Southern Africa", capital: "Gaborone", currency: "BWP", lang: "English, Setswana", badge: "Okavango Delta", safety: "Top Safety Rating" },
+            { name: "Zambia", region: "Southern Africa", capital: "Lusaka", currency: "ZMW", lang: "English, Bemba", badge: "Victoria Falls", safety: "Very Safe" },
+            { name: "Zimbabwe", region: "Southern Africa", capital: "Harare", currency: "ZiG / USD", lang: "English, Shona, Ndebele", badge: "Victoria Falls", safety: "Safe" },
+            { name: "Cabo Verde", region: "West Africa", capital: "Praia", currency: "CVE", lang: "Portuguese, Creole", badge: "Island Paradise", safety: "Very Safe" },
+            { name: "Madagascar", region: "East Africa", capital: "Antananarivo", currency: "MGA", lang: "Malagasy, French", badge: "Unique Biodiversity", safety: "Exercise Caution" },
+            { name: "Seychelles", region: "East Africa", capital: "Victoria", currency: "SCR", lang: "Seychellois Creole, English, French", badge: "Luxury Islands", safety: "Top Safety Rating" },
+            { name: "Mauritius", region: "East Africa", capital: "Port Louis", currency: "MUR", lang: "English, French, Creole", badge: "Beach Resorts", safety: "Top Safety Rating" },
+            { name: "Angola", region: "Central Africa", capital: "Luanda", currency: "AOA", lang: "Portuguese", badge: "Kalandula Falls", safety: "Moderate" },
+            { name: "Algeria", region: "North Africa", capital: "Algiers", currency: "DZD", lang: "Arabic, Berber, French", badge: "Sahara Heritage", safety: "Exercise Caution" },
+            { name: "Tunisia", region: "North Africa", capital: "Tunis", currency: "TND", lang: "Arabic, French", badge: "Carthage Ruins", safety: "Safe in Tourist Zones" },
+            { name: "Cote d'Ivoire", region: "West Africa", capital: "Yamoussoukro / Abidjan", currency: "XOF", lang: "French", badge: "Lagoon & Arts", safety: "Safe" },
+            { name: "Cameroon", region: "Central Africa", capital: "Yaoundé", currency: "XAF", lang: "French, English", badge: "Africa in Miniature", safety: "Check Regional Advisories" },
+            { name: "DR Congo", region: "Central Africa", capital: "Kinshasa", currency: "CDF", lang: "French, Lingala", badge: "Virunga Park", safety: "Check Advisories" },
+            { name: "Republic of Congo", region: "Central Africa", capital: "Brazzaville", currency: "XAF", lang: "French", badge: "Rainforest Eco", safety: "Moderate" },
+            { name: "Gabon", region: "Central Africa", capital: "Libreville", currency: "XAF", lang: "French", badge: "Loango National Park", safety: "Safe" },
+            { name: "Mozambique", region: "Southern Africa", capital: "Maputo", currency: "MZN", lang: "Portuguese", badge: "Bazaruto Archipelago", safety: "Check Coastal Zones" },
+            { name: "Malawi", region: "Southern Africa", capital: "Lilongwe", currency: "MWK", lang: "English, Chichewa", badge: "Lake Malawi", safety: "Very Safe" },
+            { name: "Gambia", region: "West Africa", capital: "Banjul", currency: "GMD", lang: "English", badge: "Smiling Coast", safety: "Very Safe" },
+            { name: "Benin", region: "West Africa", capital: "Porto-Novo", currency: "XOF", lang: "French", badge: "Ouidah Culture", safety: "Safe" },
+            { name: "Togo", region: "West Africa", capital: "Lomé", currency: "XOF", lang: "French", badge: "Coast & Markets", safety: "Safe" },
+            { name: "Sierra Leone", region: "West Africa", capital: "Freetown", currency: "SLE", lang: "English, Krio", badge: "Pristine Beaches", safety: "Safe" },
+            { name: "Liberia", region: "West Africa", capital: "Monrovia", currency: "LRD", lang: "English", badge: "Surf Beaches", safety: "Moderate" },
+            { name: "Somaliland / Somalia", region: "East Africa", capital: "Mogadishu / Hargeisa", currency: "SOS", lang: "Somali, Arabic", badge: "Laas Geel Cave Art", safety: "Check Advisories" },
+            { name: "Djibouti", region: "East Africa", capital: "Djibouti", currency: "DJF", lang: "French, Arabic", badge: "Lake Assal", safety: "Safe" },
+            { name: "Eritrea", region: "East Africa", capital: "Asmara", currency: "ERN", lang: "Tigrinya, Arabic, English", badge: "Art Deco Asmara", safety: "Check Advisories" },
+            { name: "Sudan", region: "North Africa", capital: "Khartoum", currency: "SDG", lang: "Arabic, English", badge: "Meroë Pyramids", safety: "High Caution" },
+            { name: "South Sudan", region: "East Africa", capital: "Juba", currency: "SSP", lang: "English", badge: "Sudd Wetlands", safety: "High Caution" },
+            { name: "Libya", region: "North Africa", capital: "Tripoli", currency: "LYD", lang: "Arabic", badge: "Leptis Magna", safety: "Check Advisories" },
+            { name: "Mauritania", region: "West Africa", capital: "Nouakchott", currency: "MRU", lang: "Arabic", badge: "Iron Ore Train", safety: "Exercise Caution" },
+            { name: "Mali", region: "West Africa", capital: "Bamako", currency: "XOF", lang: "French, Bambara", badge: "Timbuktu", safety: "Check Advisories" },
+            { name: "Burkina Faso", region: "West Africa", capital: "Ouagadougou", currency: "XOF", lang: "French", badge: "Arts & Cinema", safety: "Check Advisories" },
+            { name: "Niger", region: "West Africa", capital: "Niamey", currency: "XOF", lang: "French", badge: "Agadez", safety: "Check Advisories" },
+            { name: "Chad", region: "Central Africa", capital: "N'Djamena", currency: "XAF", lang: "French, Arabic", badge: "Ennedi Plateau", safety: "Check Advisories" },
+            { name: "Central African Republic", region: "Central Africa", capital: "Bangui", currency: "XAF", lang: "French, Sango", badge: "Dzanga-Sangha", safety: "Check Advisories" },
+            { name: "Equatorial Guinea", region: "Central Africa", capital: "Malabo", currency: "XAF", lang: "Spanish, French", badge: "Bioko Island", safety: "Moderate" },
+            { name: "São Tomé and Príncipe", region: "Central Africa", capital: "São Tomé", currency: "STN", lang: "Portuguese", badge: "Chocolate Islands", safety: "Top Safety Rating" },
+            { name: "Burundi", region: "East Africa", capital: "Gitega", currency: "BIF", lang: "Kirundi, French", badge: "Lake Tanganyika", safety: "Exercise Caution" },
+            { name: "Lesotho", region: "Southern Africa", capital: "Maseru", currency: "LSL / ZAR", lang: "Sesotho, English", badge: "Kingdom in the Sky", safety: "Safe" },
+            { name: "Eswatini", region: "Southern Africa", capital: "Mbabane", currency: "SZL / ZAR", lang: "SiSwati, English", badge: "Royal Cultural Festivals", safety: "Safe" },
+            { name: "Comoros", region: "East Africa", capital: "Moroni", currency: "KMF", lang: "Comorian, French, Arabic", badge: "Perfume Isles", safety: "Safe" },
+            { name: "Guinea", region: "West Africa", capital: "Conakry", currency: "GNF", lang: "French", badge: "Fouta Djallon", safety: "Exercise Caution" },
+            { name: "Guinea-Bissau", region: "West Africa", capital: "Bissau", currency: "XOF", lang: "Portuguese", badge: "Bijagós Archipelago", safety: "Moderate" }
         ];
 
-        // Big 5 Checklist Data
-        const big5Data = [
-            { id: 'lion', name: 'Lion', icon: '🦁' },
-            { id: 'leopard', name: 'Leopard', icon: '🐆' },
-            { id: 'elephant', name: 'Elephant', icon: '🐘' },
-            { id: 'rhino', name: 'Rhino', icon: '🦏' },
-            { id: 'buffalo', name: 'Cape Buffalo', icon: '🐃' }
+        // WILDLIFE DATA
+        const wildlifeData = [
+            { name: "African Lion", status: "Vulnerable", bestMonths: "July - October", topLocations: "Serengeti (Tanzania), Masai Mara (Kenya), Kruger (South Africa)", icon: "cat" },
+            { name: "Mountain Gorilla", status: "Endangered", bestMonths: "June - September, Dec - Feb", topLocations: "Volcanoes NP (Rwanda), Bwindi Impenetrable (Uganda)", icon: "trees" },
+            { name: "African Elephant", status: "Vulnerable", bestMonths: "Year-Round", topLocations: "Chobe NP (Botswana), Amboseli (Kenya), Addo Elephant (South Africa)", icon: "footprints" },
+            { name: "Cheetah", status: "Vulnerable", bestMonths: "June - October", topLocations: "Masai Mara (Kenya), Okavango Delta (Botswana)", icon: "zap" },
+            { name: "Black Rhino", status: "Critically Endangered", bestMonths: "Dry Season", topLocations: "Etosha NP (Namibia), Ol Pejeta (Kenya)", icon: "shield-alert" }
         ];
 
-        // Phrasebook Data
-        const phrasebook = {
-            swahili: [
-                { phrase: 'Jambo / Habari', translation: 'Hello / How are you?' },
-                { phrase: 'Asante sana', translation: 'Thank you very much' },
-                { phrase: 'Karibu', translation: 'Welcome' },
-                { phrase: 'Bei gani?', translation: 'How much is this?' }
-            ],
-            amharic: [
-                { phrase: 'Selam', translation: 'Hello / Peace' },
-                { phrase: 'Ameseginaleu', translation: 'Thank you' },
-                { phrase: 'Sint new?', translation: 'How much is it?' }
-            ],
-            zulu: [
-                { phrase: 'Sawubona', translation: 'Hello' },
-                { phrase: 'Yebo', translation: 'Yes' },
-                { phrase: 'Ngiyabonga', translation: 'Thank you' }
-            ],
-            wolof: [
-                { phrase: 'Nanga def', translation: 'How are you?' },
-                { phrase: 'Mangi fi', translation: 'I am fine' },
-                { phrase: 'Jërejëf', translation: 'Thank you' }
-            ]
-        };
+        // LOCAL GUIDES DATA
+        const guidesData = [
+            { name: "Amara Diallo", location: "Dakar, Senegal", languages: "French, English, Wolof", expertise: "Culture & Goree Island History", rating: "4.95 ⭐" },
+            { name: "David Kipkorir", location: "Nairobi / Masai Mara, Kenya", languages: "Swahili, English", expertise: "Safari Tracking & Big Cats", rating: "5.0 ⭐" },
+            { name: "Nouran El-Sayed", location: "Cairo, Egypt", languages: "Arabic, English, Spanish", expertise: "Egyptology & Ancient Monuments", rating: "4.92 ⭐" }
+        ];
 
-        // --- 2. INITIALIZATION ---
-        window.addEventListener('DOMContentLoaded', () => {
-            renderTabBar();
-            renderPillarsGrid();
-            renderBig5Checklist();
-            renderPhrasebook();
-            renderTransportRoutes();
-            renderBorderQueues();
-            renderTrails();
-            renderGuides();
-            updateItineraryUI();
-            checkVisaReqs();
-            initCodeViewers();
+        // AUDIO PHRASES DATA
+        const phrasesData = [
+            { lang: "Swahili", word: "Jambo / Habari", english: "Hello / How are you?", audioText: "Jambo" },
+            { lang: "Swahili", word: "Asante Sana", english: "Thank you very much", audioText: "Asante Sana" },
+            { lang: "Amharic", word: "Selam (ሰላም)", english: "Peace / Hello", audioText: "Selam" },
+            { lang: "Yoruba", word: "E kaabo", english: "Welcome", audioText: "E kaabo" },
+            { lang: "Zulu", word: "Sawubona", english: "I see you / Hello", audioText: "Sawubona" },
+            { lang: "Arabic", word: "Shukran (شكراً)", english: "Thank you", audioText: "Shukran" }
+        ];
 
-            // Check connection status
-            window.addEventListener('online', updateOnlineStatus);
-            window.addEventListener('offline', updateOnlineStatus);
-        });
+        // ITINERARY STATE
+        let itineraryItems = [
+            { id: 1, title: "Nairobi Wildlife Safari & Giraffe Center", days: 2, cost: 350 },
+            { id: 2, title: "Gorilla Trekking in Volcanoes National Park", days: 3, cost: 1500 }
+        ];
 
-        function updateOnlineStatus() {
-            const statusEl = document.getElementById('connection-status');
-            if (navigator.onLine) {
-                statusEl.className = "inline-flex items-center px-2 py-0.5 rounded text-xs font-semibold bg-emerald-800 text-emerald-100";
-                statusEl.innerHTML = '<i class="fa-solid fa-wifi mr-1"></i> Online';
-            } else {
-                statusEl.className = "inline-flex items-center px-2 py-0.5 rounded text-xs font-semibold bg-amber-800 text-amber-100";
-                statusEl.innerHTML = '<i class="fa-solid fa-plane mr-1"></i> Offline Mode Active';
-            }
-        }
-
-        // --- 3. NAVIGATION & TABS ---
-        function renderTabBar() {
-            const tabs = [
-                { id: 'overview', label: 'Dashboard' },
-                { id: 'geo-explorer', label: 'Geo-Explorer & Wildlife' },
-                { id: 'fintech', label: 'Fintech & Payments' },
-                { id: 'transport', label: 'Transport & Borders' },
-                { id: 'culture', label: 'Culture & Phrasebook' },
-                { id: 'visa-health', label: 'Visas & Health' },
-                { id: 'guides', label: 'Local Guides' },
-                { id: 'itinerary', label: 'Itinerary Planner' },
-                { id: 'code-files', label: 'PWA Source Files' }
-            ];
-
-            const container = document.getElementById('module-tab-bar');
-            container.innerHTML = tabs.map(t => `
-                <button onclick="switchTab('${t.id}')" id="tab-btn-${t.id}" class="tab-btn px-3 py-1.5 rounded-lg border border-transparent transition hover:bg-stone-300 dark:hover:bg-stone-800">
-                    ${t.label}
-                </button>
-            `).join('');
-            updateActiveTabUI();
-        }
-
+        // TAB SWITCHING
         function switchTab(tabId) {
-            currentTab = tabId;
             document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
-            const activeEl = document.getElementById(`tab-${tabId}`);
-            if (activeEl) activeEl.classList.remove('hidden');
-            updateActiveTabUI();
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        }
+            document.getElementById(`tab-${tabId}`).classList.remove('hidden');
 
-        function updateActiveTabUI() {
-            document.querySelectorAll('.tab-btn').forEach(btn => {
-                btn.className = "tab-btn px-3 py-1.5 rounded-lg border border-transparent transition hover:bg-stone-300 dark:hover:bg-stone-800 font-semibold text-stone-700 dark:text-stone-300";
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                btn.classList.remove('text-amber-400', 'bg-stone-800');
+                btn.classList.add('text-stone-300');
             });
-            const activeBtn = document.getElementById(`tab-btn-${currentTab}`);
-            if (activeBtn) {
-                activeBtn.className = "tab-btn px-3 py-1.5 rounded-lg border border-savanna-600 bg-savanna-600 text-white font-bold shadow-sm";
+
+            const activeNav = document.getElementById(`nav-${tabId}`);
+            if (activeNav) {
+                activeNav.classList.add('text-amber-400', 'bg-stone-800');
             }
+
+            // Close mobile menu if open
+            document.getElementById('mobile-menu').classList.add('hidden');
         }
 
-        function renderPillarsGrid() {
-            const grid = document.getElementById('pillars-grid');
-            grid.innerHTML = pillarCategories.map(p => `
-                <div onclick="switchTab('${p.id}')" class="bg-white dark:bg-stone-900 p-4 rounded-xl border border-stone-200 dark:border-stone-800 hover:border-savanna-500 shadow-sm transition cursor-pointer flex items-center space-x-3">
-                    <div class="text-2xl ${p.color} p-2 bg-stone-100 dark:bg-stone-800 rounded-lg">
-                        <i class="fa-solid ${p.icon}"></i>
+        // RENDER COUNTRIES
+        function renderCountries(data) {
+            const container = document.getElementById('countries-grid');
+            container.innerHTML = '';
+
+            data.forEach(c => {
+                const card = document.createElement('div');
+                card.className = "bg-white dark:bg-stone-900 border border-stone-200 dark:border-stone-800 rounded-2xl p-5 shadow-sm hover:shadow-md transition flex flex-col justify-between";
+                card.innerHTML = `
+                    <div class="space-y-3">
+                        <div class="flex justify-between items-start">
+                            <div>
+                                <span class="text-[10px] uppercase font-bold text-amber-600 dark:text-amber-400 tracking-wider">${c.region}</span>
+                                <h4 class="text-xl font-bold text-stone-900 dark:text-stone-100">${c.name}</h4>
+                            </div>
+                            <span class="px-2 py-0.5 text-xs bg-stone-100 dark:bg-stone-800 text-stone-600 dark:text-stone-300 rounded font-medium border border-stone-200 dark:border-stone-700">${c.badge}</span>
+                        </div>
+
+                        <div class="space-y-1.5 text-xs text-stone-600 dark:text-stone-400">
+                            <div class="flex items-center gap-2">
+                                <i data-lucide="building" class="w-3.5 h-3.5 text-amber-500"></i>
+                                <span><strong>Capital:</strong> ${c.capital}</span>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <i data-lucide="coins" class="w-3.5 h-3.5 text-emerald-500"></i>
+                                <span><strong>Currency:</strong> ${c.currency}</span>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <i data-lucide="message-square" class="w-3.5 h-3.5 text-blue-500"></i>
+                                <span><strong>Languages:</strong> ${c.lang}</span>
+                            </div>
+                        </div>
                     </div>
-                    <div>
-                        <h4 class="font-bold text-xs dark:text-stone-100">${p.name}</h4>
-                        <span class="text-[10px] text-stone-400">Click to open module &rarr;</span>
+
+                    <div class="mt-4 pt-3 border-t border-stone-100 dark:border-stone-800 flex justify-between items-center text-xs">
+                        <span class="text-stone-500">${c.safety}</span>
+                        <button onclick="addToItineraryFromCountry('${c.name}')" class="text-amber-600 dark:text-amber-400 hover:underline font-semibold flex items-center gap-1">
+                            + Plan Trip
+                        </button>
                     </div>
-                </div>
-            `).join('');
+                `;
+                container.appendChild(card);
+            });
+
+            document.getElementById('country-count-badge').innerText = `Showing ${data.length} of 54`;
+            lucide.createIcons();
         }
 
-        // --- 4. DATA SAVER & DARK MODE ---
-        function toggleDataSaver() {
-            dataSaver = !dataSaver;
-            document.body.classList.toggle('data-saver-active', dataSaver);
-            const label = document.getElementById('data-saver-label');
-            label.textContent = dataSaver ? 'Data Saver: ON' : 'Data Saver: OFF';
-            alert(dataSaver ? "Data Saver Activated: High-resolution imagery stripped for ultra-low band usage." : "Data Saver Deactivated.");
+        // FILTER COUNTRIES
+        function filterCountries() {
+            const query = document.getElementById('country-search').value.toLowerCase();
+            const region = document.getElementById('region-filter').value;
+
+            const filtered = countriesData.filter(c => {
+                const matchesQuery = c.name.toLowerCase().includes(query) || 
+                                     c.capital.toLowerCase().includes(query) || 
+                                     c.lang.toLowerCase().includes(query) ||
+                                     c.badge.toLowerCase().includes(query);
+                const matchesRegion = (region === "All") || (c.region === region);
+                return matchesQuery && matchesRegion;
+            });
+
+            renderCountries(filtered);
         }
 
-        function toggleDarkMode() {
-            document.documentElement.classList.toggle('dark');
+        // RENDER WILDLIFE
+        function renderWildlife() {
+            const container = document.getElementById('wildlife-cards-container');
+            container.innerHTML = '';
+
+            wildlifeData.forEach(w => {
+                const el = document.createElement('div');
+                el.className = "bg-white dark:bg-stone-900 border border-stone-200 dark:border-stone-800 rounded-2xl p-5 shadow-sm space-y-3";
+                el.innerHTML = `
+                    <div class="flex justify-between items-start">
+                        <h3 class="font-bold text-lg text-stone-900 dark:text-stone-100">${w.name}</h3>
+                        <span class="text-xs px-2 py-0.5 rounded font-semibold bg-red-100 text-red-800 dark:bg-red-950/60 dark:text-red-300">${w.status}</span>
+                    </div>
+                    <div class="space-y-1 text-xs text-stone-600 dark:text-stone-400">
+                        <p><strong>Best Sighting Months:</strong> ${w.bestMonths}</p>
+                        <p><strong>Top Parks / Reserves:</strong> ${w.topLocations}</p>
+                    </div>
+                `;
+                container.appendChild(el);
+            });
         }
 
-        // --- 5. MAP & WILDLIFE TRACKER SIMULATOR ---
-        function updateMapLayer() {
-            const layer = document.getElementById('map-layer-select').value;
-            const title = document.getElementById('layer-title');
-            const desc = document.getElementById('layer-desc');
+        // RENDER GUIDES
+        function renderGuides() {
+            const container = document.getElementById('guides-container');
+            container.innerHTML = '';
 
-            if (layer === 'parks') {
-                title.textContent = 'Active Layer: National Parks';
-                desc.textContent = 'Serengeti, Kruger, Chobe & Masai Mara boundaries active.';
-            } else if (layer === 'migration') {
-                title.textContent = 'Active Layer: Great Wildebeest Migration';
-                desc.textContent = 'Live tracker active: Northward movement near Mara River.';
-            } else if (layer === 'waterholes') {
-                title.textContent = 'Active Layer: Live Waterholes & Cam Feeds';
-                desc.textContent = 'Simulated live stream feeds linked across 12 bush waterholes.';
-            } else if (layer === 'trails') {
-                title.textContent = 'Active Layer: 4x4 Offroad Trail Difficulty';
-                desc.textContent = 'Color-coded routes: Red (Mud/Sand), Green (Standard Gravel).';
-            }
-        }
-
-        function simulateGPSLocation() {
-            document.getElementById('map-coordinates').innerHTML = `<i class="fa-solid fa-location-crosshairs mr-1 text-emerald-400"></i> GPS Fixed: Lat: -1.286, Long: 36.817 (Nairobi Hub)`;
-        }
-
-        function zoomMap(delta) {
-            alert(delta > 0 ? "Map Zoom In (+150%)" : "Map Zoom Out (-150%)");
-        }
-
-        function renderBig5Checklist() {
-            const container = document.getElementById('big5-checklist');
-            const logged = JSON.parse(localStorage.getItem('afriquest_big5') || '{}');
-
-            container.innerHTML = big5Data.map(item => {
-                const isChecked = !!logged[item.id];
-                return `
-                    <button onclick="toggleBig5('${item.id}')" class="p-3 rounded-xl border text-center transition flex flex-col items-center justify-center space-y-1 ${isChecked ? 'bg-emerald-50 dark:bg-emerald-950 border-emerald-500 text-emerald-800 dark:text-emerald-300' : 'bg-stone-50 dark:bg-stone-800 border-stone-200 dark:border-stone-700 text-stone-600 dark:text-stone-400'}">
-                        <span class="text-2xl">${item.icon}</span>
-                        <span class="text-xs font-bold">${item.name}</span>
-                        <span class="text-[9px] uppercase font-bold">${isChecked ? '✓ Spotted' : '+ Log'}</span>
+            guidesData.forEach(g => {
+                const el = document.createElement('div');
+                el.className = "bg-white dark:bg-stone-900 border border-stone-200 dark:border-stone-800 rounded-2xl p-5 shadow-sm space-y-3";
+                el.innerHTML = `
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <h4 class="font-bold text-stone-900 dark:text-stone-100 text-base">${g.name}</h4>
+                            <p class="text-xs text-stone-500">${g.location}</p>
+                        </div>
+                        <span class="text-xs font-bold bg-amber-100 dark:bg-amber-900/40 text-amber-800 dark:text-amber-300 px-2 py-0.5 rounded">${g.rating}</span>
+                    </div>
+                    <div class="text-xs space-y-1 text-stone-600 dark:text-stone-400">
+                        <p><strong>Expertise:</strong> ${g.expertise}</p>
+                        <p><strong>Languages:</strong> ${g.languages}</p>
+                    </div>
+                    <button onclick="alert('Inquiry sent to guide ${g.name}. They will respond shortly!')" class="w-full py-2 bg-stone-100 dark:bg-stone-800 hover:bg-stone-200 dark:hover:bg-stone-700 text-xs font-medium rounded-xl text-stone-800 dark:text-stone-200 transition">
+                        Contact Guide
                     </button>
                 `;
-            }).join('');
-
-            const count = Object.keys(logged).filter(k => logged[k]).length;
-            document.getElementById('checklist-score').textContent = `Logged: ${count} / 5`;
-        }
-
-        function toggleBig5(id) {
-            const logged = JSON.parse(localStorage.getItem('afriquest_big5') || '{}');
-            logged[id] = !logged[id];
-            localStorage.setItem('afriquest_big5', JSON.stringify(logged));
-            renderBig5Checklist();
-        }
-
-        // --- 6. FINTECH & CURRENCY CALC ---
-        function runCurrencyCalc() {
-            const amt = parseFloat(document.getElementById('calc-amount').value) || 0;
-            const from = document.getElementById('calc-from').value;
-            const to = document.getElementById('calc-to').value;
-
-            // Convert to USD base first
-            const usdBase = amt / currencyRates[from];
-            const result = usdBase * currencyRates[to];
-
-            document.getElementById('calc-result').textContent = `${result.toLocaleString(undefined, {maximumFractionDigits: 2})} ${to}`;
-        }
-
-        function selectPaymentMethod(method) {
-            alert(`Selected Payment Gateway: ${method}. Multi-currency escrow routing ready.`);
-        }
-
-        function processMobilePayment() {
-            const phone = document.getElementById('mobile-number').value;
-            if (!phone) {
-                alert('Please enter a valid mobile number.');
-                return;
-            }
-            alert(`STK Push Request sent to ${phone}. Please confirm the PIN prompt on your mobile handset.`);
-        }
-
-        // --- 7. TRANSPORT & LOCAL DATA ---
-        function renderTransportRoutes() {
-            const routes = [
-                { code: 'Route 46', city: 'Nairobi', path: 'CBD to Kawangware via Hurlingham' },
-                { code: 'Danfo 101', city: 'Lagos', path: 'Yaba to Ikeja Along' },
-                { code: 'TroTro 12', city: 'Accra', path: 'Circle to Madina Market' }
-            ];
-            const container = document.getElementById('transport-list');
-            container.innerHTML = routes.map(r => `
-                <li class="p-2 bg-stone-50 dark:bg-stone-800 rounded-lg border border-stone-200 dark:border-stone-700">
-                    <span class="font-bold text-savanna-600">${r.code} (${r.city})</span>
-                    <p class="text-[11px] text-stone-500 dark:text-stone-400">${r.path}</p>
-                </li>
-            `).join('');
-        }
-
-        function filterTransportRoutes() {
-            const q = document.getElementById('transport-query').value.toLowerCase();
-            const items = document.querySelectorAll('#transport-list li');
-            items.forEach(item => {
-                item.style.display = item.textContent.toLowerCase().includes(q) ? 'block' : 'none';
+                container.appendChild(el);
             });
         }
 
-        function renderBorderQueues() {
-            const borders = [
-                { name: 'Busia (KE / UG)', wait: '25 Mins', status: 'Smooth' },
-                { name: 'Beitbridge (ZA / ZW)', wait: '2.5 Hours', status: 'Heavy Traffic' },
-                { name: 'Namanga (KE / TZ)', wait: '15 Mins', status: 'Fast' }
-            ];
-            const container = document.getElementById('border-queue-list');
-            container.innerHTML = borders.map(b => `
-                <div class="p-2 bg-stone-50 dark:bg-stone-800 rounded-lg border border-stone-200 dark:border-stone-700 flex justify-between items-center text-xs">
-                    <span class="font-bold dark:text-stone-200">${b.name}</span>
-                    <span class="font-mono text-[10px] bg-stone-200 dark:bg-stone-700 px-2 py-0.5 rounded text-stone-800 dark:text-stone-200">${b.wait}</span>
-                </div>
-            `).join('');
-        }
-
-        function renderTrails() {
-            const trails = [
-                { name: 'Namib Desert Dunes', rating: 'Extreme (Grade 5)', winch: 'Required' },
-                { name: 'Serengeti Dirt Corridor', rating: 'Moderate (Grade 3)', winch: 'Optional' }
-            ];
-            const container = document.getElementById('trails-list');
-            container.innerHTML = trails.map(t => `
-                <div class="p-2 bg-stone-50 dark:bg-stone-800 rounded-lg border border-stone-200 dark:border-stone-700 text-xs">
-                    <span class="font-bold text-stone-800 dark:text-stone-200">${t.name}</span>
-                    <p class="text-[10px] text-stone-500">${t.rating} | Winch: ${t.winch}</p>
-                </div>
-            `).join('');
-        }
-
-        // --- 8. PHRASEBOOK ---
+        // RENDER PHRASEBOOK
         function renderPhrasebook() {
-            const lang = document.getElementById('phrasebook-lang').value;
-            const container = document.getElementById('phrasebook-cards');
-            const data = phrasebook[lang] || [];
+            const container = document.getElementById('phrasebook-container');
+            container.innerHTML = '';
 
-            container.innerHTML = data.map(item => `
-                <div class="p-3 bg-stone-50 dark:bg-stone-800 rounded-xl border border-stone-200 dark:border-stone-700 flex justify-between items-center">
+            phrasesData.forEach(p => {
+                const el = document.createElement('div');
+                el.className = "bg-white dark:bg-stone-900 border border-stone-200 dark:border-stone-800 rounded-xl p-4 flex justify-between items-center shadow-sm";
+                el.innerHTML = `
                     <div>
-                        <span class="font-bold text-xs text-savanna-700 dark:text-savanna-400 block">${item.phrase}</span>
-                        <span class="text-[11px] text-stone-500 dark:text-stone-400">${item.translation}</span>
+                        <span class="text-[10px] font-bold text-amber-600 uppercase">${p.lang}</span>
+                        <h4 class="font-bold text-base text-stone-900 dark:text-stone-100">${p.word}</h4>
+                        <p class="text-xs text-stone-500">${p.english}</p>
                     </div>
-                    <button onclick="playAudioSimulation('${item.phrase}')" class="p-2 bg-savanna-600 text-white rounded-lg hover:bg-savanna-500">
-                        <i class="fa-solid fa-volume-high text-xs"></i>
+                    <button onclick="speakText('${p.audioText}')" class="p-2.5 bg-amber-500/10 text-amber-600 rounded-xl hover:bg-amber-500/20 transition">
+                        <i data-lucide="volume-2" class="w-5 h-5"></i>
                     </button>
-                </div>
-            `).join('');
+                `;
+                container.appendChild(el);
+            });
         }
 
-        function playAudioSimulation(phrase) {
-            alert(`[Audio Simulation] Pronouncing: "${phrase}"`);
+        // AUDIO SPEECH SYNTHESIS
+        function speakText(text) {
+            if ('speechSynthesis' in window) {
+                const utterance = new SpeechSynthesisUtterance(text);
+                utterance.rate = 0.9;
+                window.speechSynthesis.speak(utterance);
+            } else {
+                alert("Speech synthesis is not supported in your current browser.");
+            }
         }
 
-        // --- 9. VISA CHECKER ---
-        function checkVisaReqs() {
-            const passport = document.getElementById('visa-passport').value;
+        // CURRENCY CONVERTER LOGIC
+        const ratesToUSD = {
+            USD: 1,
+            EUR: 1.08,
+            GBP: 1.28,
+            KES: 0.0077,
+            NGN: 0.00067,
+            ZAR: 0.055,
+            EGP: 0.021,
+            GHS: 0.068,
+            TZS: 0.00038,
+            XOF: 0.0016
+        };
+
+        function calculateFX() {
+            const amount = parseFloat(document.getElementById('fx-amount').value) || 0;
+            const from = document.getElementById('fx-from').value;
+            const to = document.getElementById('fx-to').value;
+
+            // Convert to USD then to target
+            const amountInUSD = amount * ratesToUSD[from];
+            const targetAmount = amountInUSD / ratesToUSD[to];
+
+            document.getElementById('fx-result-text').innerText = `${targetAmount.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})} ${to}`;
+        }
+
+        // VISA CHECKER LOGIC
+        function checkVisaStatus() {
+            const pass = document.getElementById('visa-passport').value;
             const dest = document.getElementById('visa-destination').value;
             const box = document.getElementById('visa-result-box');
 
-            let visaStatus = "eVisa Available Online (3-5 Day processing).";
-            let yellowFever = "Required if arriving from endemic countries.";
+            box.classList.remove('hidden', 'bg-emerald-50', 'border-emerald-200', 'text-emerald-800', 'bg-amber-50', 'border-amber-200', 'text-amber-800');
 
-            if (passport === 'KE' && dest === 'Rwanda') {
-                visaStatus = "Visa Free (East African Community Protocol).";
+            if (pass === "AFR") {
+                box.className = "p-4 rounded-xl text-sm border bg-emerald-50 dark:bg-emerald-950/40 border-emerald-200 dark:border-emerald-900 text-emerald-900 dark:text-emerald-200 space-y-1";
+                box.innerHTML = `<strong>Visa-Free / Visa on Arrival:</strong> Under African Union protocols, AU passport holders receive visa-free access or streamlined entry for ${dest}.`;
+            } else if (dest === "Kenya") {
+                box.className = "p-4 rounded-xl text-sm border bg-amber-50 dark:bg-amber-950/40 border-amber-200 dark:border-amber-900 text-amber-900 dark:text-amber-200 space-y-1";
+                box.innerHTML = `<strong>Electronic Travel Authorization (eTA) Required:</strong> All international travelers must apply online at least 72 hours before departure.`;
+            } else {
+                box.className = "p-4 rounded-xl text-sm border bg-blue-50 dark:bg-blue-950/40 border-blue-200 dark:border-blue-900 text-blue-900 dark:text-blue-200 space-y-1";
+                box.innerHTML = `<strong>e-Visa or Visa on Arrival Available:</strong> Check official embassy portals for ${dest} to confirm entry documentation prior to travel.`;
             }
-
-            box.innerHTML = `
-                <div class="flex items-center space-x-2 text-xs font-bold text-amber-900 dark:text-amber-300">
-                    <i class="fa-solid fa-passport"></i>
-                    <span>Visa Status for ${passport} passport traveling to ${dest}:</span>
-                </div>
-                <p class="text-xs text-amber-800 dark:text-amber-400">${visaStatus}</p>
-                <p class="text-[11px] text-amber-700 dark:text-amber-500"><strong>Yellow Fever:</strong> ${yellowFever}</p>
-            `;
         }
 
-        // --- 10. GUIDES MARKETPLACE ---
-        function renderGuides() {
-            const guides = [
-                { name: 'Josephat K.', country: 'Kenya', rating: '4.9 ★', badge: 'Verified Maasai Ranger' },
-                { name: 'Amina B.', country: 'Tanzania', rating: '5.0 ★', badge: 'Kilimanjaro Lead Guide' },
-                { name: 'Kofi M.', country: 'Ghana', rating: '4.8 ★', badge: 'Cultural & Heritage Lead' }
-            ];
+        // ITINERARY BUILDER LOGIC
+        function renderItinerary() {
+            const container = document.getElementById('itinerary-list');
+            container.innerHTML = '';
 
-            const container = document.getElementById('guides-grid');
-            container.innerHTML = guides.map(g => `
-                <div class="bg-white dark:bg-stone-900 p-5 rounded-2xl border border-stone-200 dark:border-stone-800 space-y-3 shadow-sm">
-                    <div class="flex items-center space-x-3">
-                        <div class="w-10 h-10 bg-savanna-600 text-white font-bold rounded-full flex items-center justify-center text-sm">
-                            ${g.name.charAt(0)}
-                        </div>
+            let total = 0;
+
+            if (itineraryItems.length === 0) {
+                container.innerHTML = `<p class="text-xs text-stone-500 italic py-4 text-center">Your itinerary is empty. Add destinations above!</p>`;
+            } else {
+                itineraryItems.forEach(item => {
+                    total += item.cost;
+                    const el = document.createElement('div');
+                    el.className = "flex justify-between items-center p-3 bg-stone-50 dark:bg-stone-800/80 rounded-xl border border-stone-200 dark:border-stone-700";
+                    el.innerHTML = `
                         <div>
-                            <h4 class="font-bold text-sm dark:text-stone-100">${g.name}</h4>
-                            <span class="text-[10px] bg-savanna-100 dark:bg-savanna-950 text-savanna-800 dark:text-savanna-300 px-2 py-0.5 rounded font-semibold">${g.badge}</span>
+                            <h4 class="font-bold text-sm text-stone-900 dark:text-stone-100">${item.title}</h4>
+                            <p class="text-xs text-stone-500">${item.days} Days • Est. $${item.cost}</p>
                         </div>
-                    </div>
-                    <div class="flex justify-between text-xs text-stone-500">
-                        <span>Location: ${g.country}</span>
-                        <span class="font-bold text-amber-600">${g.rating}</span>
-                    </div>
-                    <button onclick="addItineraryItem('Booked Guide: ${g.name} (${g.country})')" class="w-full bg-savanna-600 hover:bg-savanna-500 text-white font-bold py-2 rounded-xl text-xs transition">
-                        Direct Booking (Escrow Protected)
-                    </button>
-                </div>
-            `).join('');
-        }
-
-        // --- 11. ITINERARY LOGIC ---
-        function addItineraryItem(itemText) {
-            itinerary.push(itemText);
-            localStorage.setItem('afriquest_itinerary', JSON.stringify(itinerary));
-            updateItineraryUI();
-            alert(`Added to your offline itinerary: "${itemText}"`);
-        }
-
-        function addCustomItineraryItem() {
-            const input = document.getElementById('custom-item-input');
-            if (input.value.trim()) {
-                addItineraryItem(input.value.trim());
-                input.value = '';
-            }
-        }
-
-        function updateItineraryUI() {
-            document.getElementById('itinerary-badge').textContent = itinerary.length;
-            const container = document.getElementById('itinerary-items-list');
-
-            if (itinerary.length === 0) {
-                container.innerHTML = `<p class="text-xs text-stone-400 italic">No saved items in your offline trip itinerary yet.</p>`;
-                return;
+                        <button onclick="removeItineraryItem(${item.id})" class="text-red-500 hover:text-red-700 p-1">
+                            <i data-lucide="trash-2" class="w-4 h-4"></i>
+                        </button>
+                    `;
+                    container.appendChild(el);
+                });
             }
 
-            container.innerHTML = itinerary.map((item, idx) => `
-                <div class="p-3 bg-stone-50 dark:bg-stone-800 rounded-xl border border-stone-200 dark:border-stone-700 flex justify-between items-center text-xs">
-                    <span class="font-medium dark:text-stone-200"><i class="fa-solid fa-location-dot text-savanna-600 mr-2"></i>${item}</span>
-                    <button onclick="removeItineraryItem(${idx})" class="text-red-500 hover:text-red-700 p-1"><i class="fa-solid fa-trash"></i></button>
-                </div>
-            `).join('');
+            document.getElementById('itin-total-cost').innerText = `$${total.toLocaleString()}`;
+            lucide.createIcons();
         }
 
-        function removeItineraryItem(index) {
-            itinerary.splice(index, 1);
-            localStorage.setItem('afriquest_itinerary', JSON.stringify(itinerary));
-            updateItineraryUI();
+        function addItineraryItem() {
+            const title = document.getElementById('itin-title').value.trim();
+            const days = parseInt(document.getElementById('itin-days').value) || 1;
+            const cost = parseInt(document.getElementById('itin-cost').value) || 0;
+
+            if (!title) return alert("Please enter a title or destination for the activity.");
+
+            itineraryItems.push({
+                id: Date.now(),
+                title,
+                days,
+                cost
+            });
+
+            document.getElementById('itin-title').value = '';
+            renderItinerary();
+        }
+
+        function addToItineraryFromCountry(countryName) {
+            itineraryItems.push({
+                id: Date.now(),
+                title: `${countryName} Exploration`,
+                days: 4,
+                cost: 600
+            });
+            switchTab('itinerary');
+            renderItinerary();
+        }
+
+        function removeItineraryItem(id) {
+            itineraryItems = itineraryItems.filter(item => item.id !== id);
+            renderItinerary();
         }
 
         function clearItinerary() {
-            itinerary = [];
-            localStorage.removeItem('afriquest_itinerary');
-            updateItineraryUI();
+            itineraryItems = [];
+            renderItinerary();
         }
 
-        // --- 12. PWA SOURCE CODE STRINGS & DOWNLOADER ---
-        const swCode = `// sw.js - AfriQuest Service Worker
-const CACHE_NAME = 'afriquest-v1';
-const ASSETS_TO_CACHE = [
-  '/',
-  '/index.html',
-  '/styles.css',
-  '/manifest.json'
-];
+        // DATA SAVER MODE TOGGLE
+        let isDataSaver = false;
+        function toggleDataSaver() {
+            isDataSaver = !isDataSaver;
+            const label = document.getElementById('data-saver-label');
+            const btn = document.getElementById('data-saver-btn');
 
-self.addEventListener('install', (e) => {
-  e.waitUntil(
-    caches.open(CACHE_NAME).then((cache) => cache.addAll(ASSETS_TO_CACHE))
-  );
-});
-
-self.addEventListener('fetch', (e) => {
-  e.respondWith(
-    caches.match(e.request).then((res) => res || fetch(e.request))
-  );
-});`;
-
-        const manifestCode = `{
-  "name": "AfriQuest Master Exploration Platform",
-  "short_name": "AfriQuest",
-  "start_url": "./index.html",
-  "display": "standalone",
-  "background_color": "#0c0a09",
-  "theme_color": "#d97706",
-  "description": "Comprehensive Pan-African travel and offline exploration platform.",
-  "icons": [
-    {
-      "src": "https://placehold.co/192x192/d97706/ffffff?text=AfriQuest",
-      "sizes": "192x192",
-      "type": "image/png"
-    }
-  ]
-}`;
-
-        const cssCode = `/* styles.css - Custom Tailwind & Low Bandwidth Helpers */
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-
-.data-saver-active img { display: none !important; }
-.no-scrollbar::-webkit-scrollbar { display: none; }`;
-
-        function initCodeViewers() {
-            document.getElementById('code-sw').textContent = swCode;
-            document.getElementById('code-manifest').textContent = manifestCode;
-            document.getElementById('code-css').textContent = cssCode;
+            if (isDataSaver) {
+                document.body.classList.add('data-saver');
+                label.innerText = "Data Saver: ON";
+                btn.classList.add('bg-emerald-900/40', 'border-emerald-500', 'text-emerald-300');
+            } else {
+                document.body.classList.remove('data-saver');
+                label.innerText = "Data Saver: OFF";
+                btn.classList.remove('bg-emerald-900/40', 'border-emerald-500', 'text-emerald-300');
+            }
         }
 
-        function downloadFile(filename, text) {
-            const element = document.createElement('a');
-            element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
-            element.setAttribute('download', filename);
-            element.style.display = 'none';
-            document.body.appendChild(element);
-            element.click();
-            document.body.removeChild(element);
+        // DARK MODE TOGGLE
+        function toggleDarkMode() {
+            document.documentElement.classList.toggle('dark');
+            const darkIcon = document.getElementById('theme-icon-dark');
+            const lightIcon = document.getElementById('theme-icon-light');
+
+            darkIcon.classList.toggle('hidden');
+            lightIcon.classList.toggle('hidden');
         }
+
+        // MOBILE MENU TOGGLE
+        function toggleMobileMenu() {
+            const menu = document.getElementById('mobile-menu');
+            menu.classList.toggle('hidden');
+        }
+
+        function openGuideModal() {
+            alert("Local Guide Registration: Please send your tour accreditation credentials to guides@afriquest.travel.");
+        }
+
+        // INITIALIZATION
+        window.onload = function() {
+            renderCountries(countriesData);
+            renderWildlife();
+            renderGuides();
+            renderPhrasebook();
+            calculateFX();
+            renderItinerary();
+            lucide.createIcons();
+        };
     </script>
 </body>
 </html>
